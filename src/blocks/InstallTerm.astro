@@ -1,0 +1,57 @@
+---
+import type { ComponentProps } from "astro/types";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Section from "@/components/wrapper/Section.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Tabs from "@/components/interactive/Tabs.astro";
+import TabLink from "@/components/interactive/TabLink.astro";
+
+type Props = ComponentProps<typeof Section>;
+const { render = true, ...rest } = Astro.props;
+const managers = ["bun", "pnpm", "npm"];
+---
+
+<Section {render} {...rest}>
+  <ContentWrapper centered>
+    <Heading variant="h2" tag="h2">
+      Code Examples
+    </Heading>
+  </ContentWrapper>
+  <div class="code-examples_wrap">
+    <Tabs variant="terminal" aria-label="Installation commands">
+      <Fragment slot="links">
+        {managers.map((manager) => (
+          <TabLink>{manager}</TabLink>
+        ))}
+      </Fragment>
+      {managers.map(
+        (
+          manager,
+        ) => <pre class="code-examples_command"><code><span class="code-examples_prompt">root@localhost:~ $ </span>{manager} create constella@latest</code></pre>,
+      )}
+    </Tabs>
+  </div>
+</Section>
+
+<style is:global>
+  @layer components {
+    .code-examples_wrap {
+      width: 100%;
+      max-width: 48rem;
+      margin-inline: auto;
+    }
+    .code-examples_command {
+      margin: 0;
+      padding: var(--space-5) var(--space-4);
+      overflow-x: auto;
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: var(--text-small);
+      line-height: 1.8;
+      tab-size: 2;
+    }
+    .code-examples_prompt {
+      color: var(--text-2);
+    }
+  }
+</style>

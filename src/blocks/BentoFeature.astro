@@ -1,0 +1,452 @@
+---
+import type { ComponentProps } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Eyebrow from "@/components/typography/Eyebrow.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import {
+  IconCheck,
+  IconGitPullRequest,
+  IconLock,
+  IconSearch,
+} from "@tabler/icons-astro";
+
+type Props = Pick<
+  ComponentProps<typeof Section>,
+  "render" | "theme" | "paddingTop" | "paddingBottom"
+> &
+  Omit<astroHTML.JSX.HTMLAttributes, "color">;
+const {
+  render = true,
+  theme = "inherit",
+  paddingTop = "medium",
+  paddingBottom = "medium",
+  class: className,
+  ...rest
+} = Astro.props;
+const regions = ["fra1", "iad1", "sin1", "gru1", "syd1", "hnd1"];
+const steps = [
+  { name: "Install dependencies", time: "14s" },
+  { name: "Build application", time: "52s" },
+  { name: "Deploy to the edge", time: "6s" },
+];
+---
+
+<Section
+  {render}
+  {theme}
+  {paddingTop}
+  {paddingBottom}
+  class={className}
+  {...rest}
+>
+  <ContentWrapper centered>
+    <Eyebrow>Kestrel platform</Eyebrow>
+    <Heading tag="h2" variant="h2" maxWidth={25}>
+      Everything between a pull request and production
+    </Heading>
+    <Paragraph variant="large" maxWidth={56}>
+      Preview every change, ship with confidence, and keep your team moving. One
+      platform, from your first commit to your next million requests.
+    </Paragraph>
+  </ContentWrapper>
+
+  <div class="bento-feature_wrap">
+    <article class="bento-feature_tile preview">
+      <h3 class="bento-feature_title text-style-h5">
+        A live preview for every pull request
+      </h3>
+      <p class="bento-feature_text text-style-small">
+        Give every change a home before it reaches production.
+      </p>
+      <div
+        class="bento-feature_visual"
+        role="img"
+        aria-label="Pull request 482, Save cards at checkout, is ready at its preview URL. All three build steps passed in 72 seconds. Lena and Kenji left three comments, including Lena’s approval of the checkout flow."
+      >
+        <div class="bento-feature_panel">
+          <div class="bento-feature_row">
+            <IconGitPullRequest
+              size="1.25em"
+              stroke={1.75}
+              aria-hidden="true"
+            />
+            <strong class="bento-feature_truncate">
+              Save cards at checkout
+            </strong>
+            <span class="bento-feature_muted">#482</span>
+          </div>
+          <p class="bento-feature_mono bento-feature_truncate">
+            checkout-saved-cards → main
+          </p>
+          <div class="bento-feature_well">
+            <span class="bento-feature_mono bento-feature_truncate">
+              checkout-saved-cards.kestrel.app
+            </span>
+            <span class="bento-feature_status">Ready</span>
+          </div>
+          <div class="bento-feature_steps">
+            {steps.map((step) => (
+              <div class="bento-feature_row">
+                <IconCheck size="1em" stroke={1.75} aria-hidden="true" />
+                <span class="bento-feature_grow">{step.name}</span>
+                <span class="bento-feature_mono bento-feature_muted">
+                  {step.time}
+                </span>
+              </div>
+            ))}
+          </div>
+          <div class="bento-feature_row">
+            <span class="bento-feature_avatars">
+              <span>LF</span>
+              <span>KW</span>
+            </span>
+            <span class="bento-feature_muted">
+              Lena and Kenji left 3 comments
+            </span>
+          </div>
+        </div>
+        <div class="bento-feature_panel comment">
+          <div class="bento-feature_row">
+            <span class="bento-feature_avatar">LF</span>
+            <strong>Lena Fischer</strong>
+            <span class="bento-feature_muted">2m ago</span>
+          </div>
+          <p class="bento-feature_comment">
+            Checkout feels great. Ready to ship.
+          </p>
+        </div>
+      </div>
+    </article>
+
+    <article class="bento-feature_tile rollback">
+      <h3 class="bento-feature_title text-style-h5">Roll back in one click</h3>
+      <p class="bento-feature_text text-style-small">
+        Go back to a healthy deploy without slowing down.
+      </p>
+      <div class="bento-feature_visual" aria-hidden="true">
+        <div class="bento-feature_raised">
+          <span class="bento-feature_dot error"></span>
+          <span class="bento-feature_mono bento-feature_truncate bento-feature_grow">
+            a8f291c · production
+          </span>
+          <span class="bento-feature_status error">Errors 4.2%</span>
+        </div>
+        <div class="bento-feature_raised">
+          <span class="bento-feature_dot"></span>
+          <span class="bento-feature_mono bento-feature_truncate bento-feature_grow">
+            e3b07d1 · previous
+          </span>
+          <span class="bento-feature_chip">Roll back</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="bento-feature_tile">
+      <h3 class="bento-feature_title text-style-h5">Close to every customer</h3>
+      <p class="bento-feature_text text-style-small">
+        Run near your users in 32 regions worldwide.
+      </p>
+      <div class="bento-feature_visual regions" aria-hidden="true">
+        {regions.map((region) => (
+          <span class="bento-feature_raised">
+            <span class="bento-feature_dot"></span>
+            <span class="bento-feature_mono">{region}</span>
+          </span>
+        ))}
+        <span class="bento-feature_muted">+26 more</span>
+      </div>
+    </article>
+
+    <article class="bento-feature_tile">
+      <h3 class="bento-feature_title text-style-h5">Secrets stay secret</h3>
+      <p class="bento-feature_text text-style-small">
+        Encrypted variables, scoped to each environment.
+      </p>
+      <div class="bento-feature_visual" aria-hidden="true">
+        {["DATABASE_URL", "STRIPE_SECRET", "AUTH_SECRET"].map((key) => (
+          <div class="bento-feature_raised">
+            <IconLock size="1em" stroke={1.75} />
+            <span class="bento-feature_mono bento-feature_truncate bento-feature_grow">
+              {key}
+            </span>
+            <span class="bento-feature_muted">••••••</span>
+          </div>
+        ))}
+      </div>
+    </article>
+
+    <article class="bento-feature_tile wide">
+      <h3 class="bento-feature_title text-style-h5">
+        Find the failing request in seconds
+      </h3>
+      <p class="bento-feature_text text-style-small">
+        Search live logs and get straight to the root cause.
+      </p>
+      <div class="bento-feature_visual" aria-hidden="true">
+        <div class="bento-feature_raised">
+          <IconSearch size="1em" stroke={1.75} />
+          <span class="bento-feature_mono bento-feature_truncate">
+            status:500 path:/checkout
+          </span>
+        </div>
+        <div class="bento-feature_logs bento-feature_mono">
+          <div>
+            14:32:08 <span class="bento-feature_error">500</span> POST /checkout
+          </div>
+          <div>
+            14:32:09 <span class="bento-feature_error">500</span> POST /checkout
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="bento-feature_tile wide">
+      <h3 class="bento-feature_title text-style-h5">
+        Spend caps, not surprise bills
+      </h3>
+      <p class="bento-feature_text text-style-small">
+        Set a budget. We’ll keep you within it.
+      </p>
+      <div class="bento-feature_visual" aria-hidden="true">
+        <div class="bento-feature_panel">
+          <div class="bento-feature_usage">
+            <span class="bento-feature_muted">October usage</span>
+            <strong>
+              $184.20 <span class="bento-feature_muted">of $250</span>
+            </strong>
+          </div>
+          <div class="bento-feature_meter">
+            <span></span>
+          </div>
+          <p class="bento-feature_caption">
+            74% of your monthly cap · resets Nov 1
+          </p>
+        </div>
+      </div>
+    </article>
+  </div>
+</Section>
+
+<style is:global>
+  @layer components {
+    .bento-feature_wrap {
+      --_success: light-dark(#167044, #83e8af);
+      --_error: light-dark(#b42332, #ff9ba5);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-3);
+      width: 100%;
+      @media (width >= 48rem) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        & > .preview,
+        & > .rollback {
+          grid-column: span 2;
+        }
+      }
+      @media (width >= 64rem) {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        & > .preview {
+          grid-row: span 2;
+        }
+        & > .wide {
+          grid-column: span 2;
+        }
+      }
+    }
+    .bento-feature_tile {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      padding: var(--space-4);
+      background: var(--background-2);
+      border: var(--border-width) solid var(--border);
+      border-radius: calc(var(--radius-main) * 1.5);
+      color: var(--text);
+    }
+    .bento-feature_title {
+      margin: 0;
+    }
+    .bento-feature_text {
+      margin: var(--space-2) 0 0;
+      color: var(--text-2);
+    }
+    .bento-feature_visual {
+      margin-top: auto;
+      padding-top: var(--space-4);
+      min-width: 0;
+      font-size: 0.75rem;
+      line-height: 1.6;
+    }
+    .bento-feature_panel,
+    .bento-feature_raised {
+      background: var(--background);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-small);
+      box-shadow: 0 0.125rem 0.25rem
+        color-mix(in srgb, var(--text) 4%, transparent);
+    }
+    .bento-feature_panel {
+      padding: var(--space-3);
+    }
+    .bento-feature_panel.comment {
+      margin-top: var(--space-3);
+      margin-inline-start: var(--space-4);
+    }
+    .bento-feature_row,
+    .bento-feature_raised,
+    .bento-feature_well {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      min-width: 0;
+    }
+    .bento-feature_row > svg,
+    .bento-feature_raised > svg {
+      flex-shrink: 0;
+    }
+    .bento-feature_raised {
+      padding: var(--space-2);
+    }
+    .bento-feature_raised + .bento-feature_raised {
+      margin-top: var(--space-2);
+    }
+    .bento-feature_well {
+      justify-content: space-between;
+      background: var(--background-2);
+      border-radius: var(--radius-small);
+      padding: var(--space-2);
+      margin-block: var(--space-3);
+    }
+    .bento-feature_mono {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 0.6875rem;
+      font-variant-numeric: tabular-nums;
+    }
+    p.bento-feature_mono {
+      margin-block: var(--space-2);
+      color: var(--text-2);
+    }
+    .bento-feature_truncate {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .bento-feature_grow {
+      flex: 1;
+    }
+    .bento-feature_muted {
+      color: var(--text-2);
+    }
+    .bento-feature_steps {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      margin-block: var(--space-3);
+    }
+    .bento-feature_steps svg {
+      color: var(--_success);
+    }
+    .bento-feature_status {
+      flex-shrink: 0;
+      color: var(--_success);
+      background: color-mix(in srgb, var(--_success) 10%, var(--background));
+      border: var(--border-width) solid
+        color-mix(in srgb, var(--_success) 25%, transparent);
+      border-radius: var(--radius-round);
+      padding: 0.125rem 0.375rem;
+      font-size: 0.625rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .bento-feature_status.error {
+      color: var(--_error);
+      background: color-mix(in srgb, var(--_error) 10%, var(--background));
+      border-color: color-mix(in srgb, var(--_error) 25%, transparent);
+    }
+    .bento-feature_dot {
+      width: 0.375rem;
+      height: 0.375rem;
+      flex-shrink: 0;
+      border-radius: var(--radius-round);
+      background: var(--_success);
+    }
+    .bento-feature_dot.error {
+      background: var(--_error);
+    }
+    .bento-feature_chip {
+      flex-shrink: 0;
+      border: var(--border-width) solid var(--border);
+      padding: 0.125rem 0.375rem;
+      border-radius: var(--radius-small);
+      white-space: nowrap;
+    }
+    .bento-feature_avatars {
+      display: flex;
+      padding-inline-end: 0.375rem;
+    }
+    .bento-feature_avatar,
+    .bento-feature_avatars > span {
+      display: inline-grid;
+      place-items: center;
+      flex-shrink: 0;
+      width: 2em;
+      height: 2em;
+      background: var(--background-3);
+      border: var(--border-width) solid var(--background);
+      border-radius: var(--radius-round);
+      font-size: 0.625rem;
+    }
+    .bento-feature_avatars > span + span {
+      margin-inline-start: -0.375rem;
+    }
+    .bento-feature_comment {
+      margin: var(--space-2) 0 0;
+    }
+    .bento-feature_visual.regions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .bento-feature_visual.regions > .bento-feature_raised {
+      margin: 0;
+    }
+    .bento-feature_logs {
+      margin-top: var(--space-3);
+      color: var(--text-2);
+      overflow-wrap: anywhere;
+    }
+    .bento-feature_error {
+      color: var(--_error);
+    }
+    .bento-feature_usage {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: var(--space-1);
+      font-variant-numeric: tabular-nums;
+    }
+    .bento-feature_meter {
+      height: 0.375rem;
+      border-radius: var(--radius-round);
+      background: var(--background-2);
+      overflow: hidden;
+      margin-block: var(--space-3);
+    }
+    .bento-feature_meter > span {
+      display: block;
+      width: 74%;
+      height: 100%;
+      background: var(--text);
+      border-radius: inherit;
+    }
+    .bento-feature_caption {
+      margin: 0;
+      color: var(--text-2);
+      font-size: 0.6875rem;
+    }
+  }
+</style>

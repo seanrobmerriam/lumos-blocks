@@ -1,6 +1,5 @@
 ---
 import Layout from "@/layouts/BaseLayout.astro";
-import CodeExamples from "@/blocks/CodeExamples.astro";
 import HeroBlock from "@/blocks/HeroBlock.astro";
 import Section from "@/components/wrapper/Section.astro";
 import Heading from "@/components/typography/Heading.astro";
@@ -11,18 +10,50 @@ import Icon from "@/components/media/Icon.astro";
 import logo_icon from "@/assets/logo/logo-icon.svg";
 import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
 import Grid from "@/components/wrapper/Grid.astro";
-import Card from "@/components/item/Card.astro";
+import BentoFeature from "@/blocks/BentoFeature.astro";
 import { 
   IconLockCheck,
   IconTool,
   IconHttpGet,
   IconBinary,
  } from "@tabler/icons-astro";
+import InstallTerm from "@/blocks/InstallTerm.astro";
+import BrowserDemo from "@/components/content/BrowserDemo.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import WaitlistFeature from "@/blocks/WaitlistFeature.astro";
+import CenteredProductHero from "@/blocks/CenteredProductHero.astro";
+import TextOnlyHero from "@/blocks/TextOnlyHero.astro";
+import ThreePlanPricing from "@/blocks/ThreePlanPricing.astro";
+import SinglePlanPricing from "@/blocks/SinglePlanPricing.astro";
+import SplitScreenSignup from "@/blocks/SplitScreenSignup.astro";
+import NewsletterCard from "@/blocks/NewsletterCard.astro";
+import PostListThumbnails from "@/blocks/PostListThumbnails.astro";
+import TwoColumnFaq from "@/blocks/TwoColumnFaq.astro";
 ---
 
 <Layout theme="dark">
   <HeroBlock />
-  <CodeExamples />
+  <hr>
+  <InstallTerm id="installation" />
+  <hr>
+  <BentoFeature id="platform-features" />
+  <Section>
+    <ContentWrapper centered>
+      <Eyebrow>From code to canvas</Eyebrow>
+      <Heading tag="h2" variant="h2" maxWidth={24}>A little code. A world of possibilities.</Heading>
+      <Paragraph variant="large" maxWidth={54}>Bring your ideas to life with HTML and CSS. Your next page starts with a blank canvas and a browser.</Paragraph>
+    </ContentWrapper>
+    <BrowserDemo />
+  </Section>
+  <WaitlistFeature />
+  <CenteredProductHero headingTag="h2" ratingText="Example rating: 4.8 out of 5 from 1,900 support teams" />
+  <TextOnlyHero headingTag="h2" customersHeading="Example customer wordmarks" />
+  <ThreePlanPricing id="pricing" />
+  <SinglePlanPricing id="single-plan-pricing" />
+  <SplitScreenSignup id="signup" />
+  <NewsletterCard id="newsletter" />
+  <PostListThumbnails id="journal" />
+  <TwoColumnFaq id="faq" />
 </Layout>
 <style>    </Grid>
 
@@ -116,5 +147,69 @@ import {
 
 .font-figtree {
   font-family: "Figtree Variable";
+}
+
+.font-dseg7-classic {
+  font-family: "DSEG7 Classic";
+}
+
+.font-londrina-solid {
+  font-family: "Londrina Solid";
+}
+
+.font-hachi-maru-pop {
+  font-family: "Hachi Maru Pop";
+}
+
+.font-rubik-dirt {
+  font-family: "Rubik Dirt";
+}
+
+.font-syncopate {
+  font-family: "Syncopate";
+}
+
+.font-monoton {
+  font-family: "Monoton";
+}
+
+.font-honk {
+  font-family: "Honk Variable";
+}
+
+.font-bowlby-one-sc {
+  font-family: "Bowlby One SC";
+}
+
+.font-lilita-one {
+  font-family: "Lilita One";
+}
+
+.font-dela-gothic-one {
+  font-family: "Dela Gothic One";
+}
+
+.font-grandstander {
+  font-family: "Grandstander Variable";
+}
+
+.font-yanone-kaffeesatz {
+  font-family: "Yanone Kaffeesatz Variable";
+}
+
+.font-bangers {
+  font-family: "Bangers";
+}
+
+.font-luckiest-guy {
+  font-family: "Luckiest Guy";
+}
+
+.font-urbanist {
+  font-family: "Urbanist Variable";
+}
+
+.font-anton {
+  font-family: "Anton";
 }
 </style>

@@ -1,0 +1,187 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import { IconArrowRight, IconCheck } from "@tabler/icons-astro";
+
+type Props = Pick<
+  ComponentProps<typeof Section>,
+  "render" | "theme" | "paddingTop" | "paddingBottom"
+> &
+  HTMLAttributes<"section"> & {
+    /** Heading level. */
+    headingTag?: "h1" | "h2" | "h3";
+    /** Primary action destination. */
+    projectHref?: string;
+    /** Sample report destination. */
+    reportHref?: string;
+    /** Short product benefits. */
+    reassurances?: string[];
+    /** Customer row heading. */
+    customersHeading?: string;
+    /** Customer names displayed as wordmarks. */
+    customers?: string[];
+  };
+const {
+  render = true,
+  headingTag = "h1",
+  projectHref = "#installation",
+  reportHref = "#platform-features",
+  reassurances = [
+    "Free for 3 projects",
+    "Transcripts in 31 languages",
+    "Data stays in the EU",
+  ],
+  customersHeading = "Research teams at 1,900 companies run their interviews on Fieldwork",
+  customers = ["Halcyon", "Northwind", "Kestrel Labs", "Brightpath", "Lumora"],
+  theme = "inherit",
+  paddingTop = "large",
+  paddingBottom = "large",
+  id = "text-only-hero",
+  class: className,
+  ...rest
+} = Astro.props;
+const titleId = `${id}-title`;
+const customersId = `${id}-customers`;
+const CustomerHeading =
+  headingTag === "h1" ? "h2" : headingTag === "h2" ? "h3" : "h4";
+const visibleReassurances = reassurances.filter((item) => item.trim());
+const visibleCustomers = customers.filter((item) => item.trim());
+---
+
+<Section
+  {render}
+  {theme}
+  {paddingTop}
+  {paddingBottom}
+  {id}
+  aria-labelledby={titleId}
+  class={className}
+  {...rest}
+>
+  <ContentWrapper centered>
+    <p class="text-hero-eyebrow_wrap">Fieldwork · customer research</p>
+    <Heading tag={headingTag} variant="display" id={titleId} maxWidth={22}>
+      Customer interviews, turned into decisions
+    </Heading>
+    <Paragraph variant="large" maxWidth={57}>
+      Fieldwork records, transcribes and tags every call, then links each quote
+      to the roadmap item it supports. Your team decides from evidence, not from
+      memory.
+    </Paragraph>
+    <ButtonWrapper variant="stack-to-row">
+      <Button element="link" href={projectHref}>
+        Start a free project{" "}
+        <span class="text-hero-arrow_wrap">
+          <IconArrowRight size="1em" stroke={1.75} aria-hidden="true" />
+        </span>
+      </Button>
+      <Button element="link" href={reportHref} emphasis="secondary">
+        See a sample report
+      </Button>
+    </ButtonWrapper>
+    {visibleReassurances.length > 0 && (
+      <ul class="text-hero-benefits_wrap text-style-small">
+        {visibleReassurances.map((item) => (
+          <li class="text-hero-benefits_item">
+            <IconCheck size="1.15em" stroke={1.75} aria-hidden="true" />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    )}
+  </ContentWrapper>
+  {customersHeading.trim() && visibleCustomers.length > 0 && (
+    <div class="text-hero-customers_wrap">
+      <CustomerHeading
+        id={customersId}
+        class="text-hero-customers_heading text-style-small"
+      >
+        {customersHeading}
+      </CustomerHeading>
+      <ul class="text-hero-customers_list" aria-labelledby={customersId}>
+        {visibleCustomers.map((customer) => (
+          <li>{customer}</li>
+        ))}
+      </ul>
+    </div>
+  )}
+</Section>
+
+<style is:global>
+  @layer components {
+    .text-hero-eyebrow_wrap {
+      margin: 0;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-2);
+    }
+    .text-hero-arrow_wrap {
+      display: inline-flex;
+      vertical-align: middle;
+      transition: translate var(--hover-duration) var(--hover-ease);
+      a:hover & {
+        translate: 0.125em 0;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+      }
+    }
+    .text-hero-benefits_wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2) var(--space-5);
+      list-style: none;
+      padding: 0;
+      margin: var(--space-5) 0 0;
+      color: var(--text-2);
+      @media (width >= 30rem) {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+    }
+    .text-hero-benefits_item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      & > svg {
+        flex-shrink: 0;
+        color: var(--text);
+      }
+    }
+    .text-hero-customers_wrap {
+      width: 100%;
+      max-width: 56rem;
+      margin-inline: auto;
+      padding-top: var(--space-5);
+      border-top: var(--border-width) solid var(--border);
+      text-align: center;
+      color: var(--text-2);
+    }
+    .text-hero-customers_heading {
+      margin: 0;
+    }
+    .text-hero-customers_list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-3) var(--space-6);
+      list-style: none;
+      padding: 0;
+      margin: var(--space-4) 0 0;
+      font-family: var(--primary-family);
+      font-size: var(--text-large);
+      font-weight: var(--primary-bold);
+      letter-spacing: var(--letter-spacing-tight);
+    }
+  }
+</style>

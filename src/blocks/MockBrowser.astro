@@ -1,69 +1,118 @@
-<div class="browser-window">
-  <div class="browser-header">
-    <div class="browser-dots">
-      <span class="dot red"></span>
-      <span class="dot yellow"></span>
-      <span class="dot green"></span>
+---
+import type { HTMLAttributes } from "astro/types";
+import { slotContent } from "@/utils/slots.ts";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** HTML markup rendered in an isolated screen. Overrides the default slot. */
+  html?: string;
+  /** Styles for the isolated HTML screen. */
+  css?: string;
+  /** Display address. */
+  address?: string;
+  /** Accessible label for the browser screen. */
+  label?: string;
+}
+
+const {
+  render = true,
+  html,
+  css = "",
+  address = "localhost:4321",
+  label = "Website preview",
+  class: className,
+  ...rest
+} = Astro.props;
+const content = html === undefined ? await slotContent(Astro.slots) : "";
+const document = html?.trim()
+  ? `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><style>*,*::before,*::after{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;overflow-wrap:anywhere}img,svg{max-width:100%}${css}</style></head><body>${html}</body></html>`
+  : undefined;
+---
+
+{render && (document || content) && (
+  <div class:list={["mock-browser_wrap", className]} {...rest}>
+    <div class="mock-browser_toolbar">
+      <div class="mock-browser_controls" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <span class="mock-browser_address">{address}</span>
     </div>
+    {document ? (
+      <iframe
+        class="mock-browser_screen"
+        title={label}
+        srcdoc={document}
+        sandbox=""
+        loading="lazy"
+      ></iframe>
+    ) : (
+      <div class="mock-browser_content" role="region" aria-label={label}>
+        <Fragment set:html={content} />
+      </div>
+    )}
   </div>
-  <div class="browser-body">
-    <!-- Put your image, text, or content here -->
-    <slot />
-  </div>
-</div>
+)}
 
-<style>
-.browser-window {
-  width: 100%;
-  max-width: 600px;
-  border: 3px solid #404040;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-  background: #000000;
-  font-family: system-ui, -apple-system, sans-serif;
-}
-
-.browser-header {
-  display: flex;
-  align-items: center;
-  padding: 10px 12px;
-  background-color: #919191;
-  border-bottom: 1px solid #000000;
-}
-
-.browser-dots {
-  display: flex;
-  gap: 6px;
-}
-
-.dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-
-.dot.red { background-color: #ef4444; }
-.dot.yellow { background-color: #f59e0b; }
-.dot.green { background-color: #10b981; }
-
-.browser-address {
-  flex-grow: 1;
-  margin: 0 12px;
-  background: #747373;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  padding: 4px 10px;
-  font-size: 12px;
-  color: #4b5563;
-  text-align: center;
-}
-
-.browser-body {
-  padding: 20px;
-  background: #000000;
-  vertical-align: middle;
-  align-items: center;
-  display: flex;
-}
+<style is:global>
+  @layer components {
+    .mock-browser_wrap {
+      width: 100%;
+      min-width: 0;
+      overflow: clip;
+      background: var(--background);
+      color: var(--text);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-main);
+      box-shadow: 0 var(--space-4) var(--space-8)
+        color-mix(in srgb, var(--text) 8%, transparent);
+    }
+    .mock-browser_toolbar {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-2) var(--space-3);
+      background: var(--background-2);
+      border-bottom: var(--border-width) solid var(--border);
+    }
+    .mock-browser_controls {
+      display: flex;
+      gap: 0.375rem;
+      flex-shrink: 0;
+      & > span {
+        width: 0.625rem;
+        height: 0.625rem;
+        border: var(--border-width) solid var(--border);
+        border-radius: var(--radius-round);
+        background: var(--background-3);
+      }
+    }
+    .mock-browser_address {
+      min-width: 0;
+      flex: 1;
+      padding: var(--space-1) var(--space-2);
+      background: var(--background);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-small);
+      text-align: center;
+      font-size: var(--text-small);
+      color: var(--text-2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mock-browser_screen {
+      display: block;
+      width: 100%;
+      height: 32rem;
+      border: 0;
+      background: var(--background);
+    }
+    .mock-browser_content {
+      padding: var(--space-4);
+      overflow-x: auto;
+    }
+  }
 </style>

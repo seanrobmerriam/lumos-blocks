@@ -1,0 +1,261 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import { IconPlus } from "@tabler/icons-astro";
+
+type Props = Pick<
+  ComponentProps<typeof Section>,
+  "render" | "theme" | "paddingTop" | "paddingBottom"
+> &
+  HTMLAttributes<"section"> & {
+    /** Support contact destination. */
+    supportHref?: string;
+    /** Full pricing destination. */
+    pricingHref?: string;
+    /** Import guide destination. */
+    importHref?: string;
+  };
+const {
+  render = true,
+  supportHref = "#installation",
+  pricingHref = "#pricing",
+  importHref = "#installation",
+  theme = "inherit",
+  paddingTop = "large",
+  paddingBottom = "large",
+  id = `two-column-faq-${crypto.randomUUID()}`,
+  class: className,
+  ...rest
+} = Astro.props;
+const questions = [
+  {
+    question: "Do my customers need an account to pay?",
+    answer:
+      "No. Each invoice has its own payment page. Customers pay by card, bank transfer or Apple Pay without signing up, and you see the payment the moment it clears.",
+  },
+  {
+    question: "Which payment methods can my customers use?",
+    answer:
+      "Visa, Mastercard and Amex, Apple Pay and Google Pay, SEPA Direct Debit, and bank transfer in 34 currencies. You choose which ones each invoice offers.",
+  },
+  {
+    question: "What does Lumora cost per payment?",
+    answer:
+      "1.4% + €0.25 for European cards and 2.9% + €0.25 for cards from elsewhere. Bank transfers are free, and the Starter plan has no monthly fee.",
+    href: pricingHref,
+    link: "See full pricing",
+  },
+  {
+    question: "When does the money reach my bank?",
+    answer:
+      "Two working days after a payment clears, paid out daily or weekly as you prefer. Instant payouts to an eligible debit card cost 1%.",
+  },
+  {
+    question: "Can I change the wording of reminders?",
+    answer:
+      "Yes, every word, per step. Reminders go from your own email address, three days before the due date, on the day and a week after, unless you pick other days.",
+  },
+  {
+    question: "Do you handle VAT and sales tax?",
+    answer:
+      "Yes, for 135 countries, based on your customer’s address and tax ID. When an EU business gives a valid VAT number, the reverse charge is applied for you.",
+  },
+  {
+    question: "Can I import invoices from another tool?",
+    answer:
+      "Upload a CSV, or connect QuickBooks or Xero and we bring your open invoices and customers across.",
+    href: importHref,
+    link: "Follow the import guide",
+  },
+];
+---
+
+<Section
+  {render}
+  {theme}
+  {paddingTop}
+  {paddingBottom}
+  {id}
+  class={className}
+  aria-labelledby={`${id}-title`}
+  {...rest}
+>
+  <div class="faq-split_wrap">
+    <div class="faq-split_intro">
+      <p class="faq-split_eyebrow">Support</p>
+      <h2 class="faq-split_title text-style-h2" id={`${id}-title`}>
+        Questions, answered.
+      </h2>
+      <p class="faq-split_lead text-style-large">
+        Everything about getting paid with Lumora. Can’t find what you need?{" "}
+        <a href={supportHref}>Write to us</a> and a person replies within a
+        working day.
+      </p>
+      <div class="faq-split_person">
+        <img
+          src="https://readymadeui.com/team-2.webp"
+          width="40"
+          height="40"
+          loading="lazy"
+          alt=""
+        />
+        <p>
+          <strong>Omar Haddad, support lead</strong>
+          <span>Usually replies in about 3 hours</span>
+        </p>
+      </div>
+    </div>
+    <div class="faq-split_questions">
+      {questions.map((item, i) => (
+        <details class="faq-split_item" open={i === 0}>
+          <summary>
+            {item.question}
+            <IconPlus size="1.25em" stroke={1.75} aria-hidden="true" />
+          </summary>
+          <div class="faq-split_answer">
+            <p>
+              {item.answer} {item.href && <a href={item.href}>{item.link}</a>}
+              {item.href && "."}
+            </p>
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</Section>
+
+<style is:global>
+  @layer components {
+    .faq-split_wrap {
+      display: grid;
+      gap: var(--space-7) var(--space-8);
+      width: 100%;
+      max-width: 48rem;
+      margin-inline: auto;
+      @media (width >= 64rem) {
+        max-width: none;
+        grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+        & > .faq-split_intro {
+          position: sticky;
+          top: calc(var(--nav-height) + var(--space-5));
+          align-self: start;
+        }
+      }
+    }
+    .faq-split_eyebrow {
+      margin: 0;
+      font-family: ui-monospace, monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--text-2);
+    }
+    .faq-split_title {
+      margin: var(--space-3) 0 0;
+    }
+    .faq-split_lead {
+      margin: var(--space-4) 0 0;
+      color: var(--text-2);
+    }
+    .faq-split_lead a,
+    .faq-split_answer a {
+      color: var(--text);
+      font-weight: var(--primary-medium);
+      text-underline-offset: 0.25em;
+      text-decoration-color: var(--border);
+      &:hover {
+        text-decoration-color: currentcolor;
+      }
+    }
+    .faq-split_person {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-top: var(--space-5);
+      & > img {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: var(--radius-round);
+        object-fit: cover;
+      }
+      & > p {
+        margin: 0;
+        font-size: 0.875rem;
+      }
+      & strong {
+        display: block;
+        font-weight: var(--primary-medium);
+      }
+      & span {
+        display: block;
+        color: var(--text-2);
+      }
+    }
+    .faq-split_questions {
+      min-width: 0;
+      border-block: var(--border-width) solid var(--border);
+    }
+    .faq-split_item {
+      interpolate-size: allow-keywords;
+      & + & {
+        border-top: var(--border-width) solid var(--border);
+      }
+      & > summary {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        gap: var(--space-4);
+        padding-block: var(--space-4);
+        font-size: 0.9375rem;
+        line-height: 1.6;
+        font-weight: var(--primary-medium);
+        list-style: none;
+        cursor: pointer;
+        &::-webkit-details-marker {
+          display: none;
+        }
+        & > svg {
+          flex-shrink: 0;
+          margin-top: 0.2em;
+          color: var(--text-2);
+          transition: rotate var(--hover-duration) var(--hover-ease);
+        }
+        &:hover > svg {
+          color: var(--text);
+        }
+      }
+      &[open] > summary > svg {
+        rotate: 45deg;
+      }
+      &::details-content {
+        overflow: hidden;
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        &::details-content {
+          height: 0;
+          transition:
+            height 300ms ease-out,
+            content-visibility 300ms ease-out allow-discrete;
+        }
+        &[open]::details-content {
+          height: auto;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        & > summary > svg {
+          transition: none;
+        }
+      }
+    }
+    .faq-split_answer {
+      padding-inline-end: var(--space-7);
+      padding-bottom: var(--space-4);
+      color: var(--text-2);
+      font-size: 0.875rem;
+      line-height: 1.7;
+      & > p {
+        margin: 0;
+      }
+    }
+  }
+</style>

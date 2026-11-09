@@ -1,0 +1,828 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import {
+  IconChartBar,
+  IconPlug,
+  IconChecks,
+  IconListCheck,
+  IconShieldCheck,
+  IconEye,
+  IconArrowRight,
+  IconMail,
+} from "@tabler/icons-astro";
+
+type Props = Pick<
+  ComponentProps<typeof Section>,
+  "render" | "theme" | "paddingTop" | "paddingBottom"
+> &
+  HTMLAttributes<"section"> & {
+    /** Heading level. */
+    headingTag?: "h1" | "h2" | "h3";
+    /** Product name. */
+    productName?: string;
+    /** Brand destination. */
+    homeHref?: string;
+    /** Sign-in destination. Omit to display a demo label. */
+    signInHref?: string;
+    /** Terms destination. */
+    termsHref?: string;
+    /** Privacy destination. */
+    privacyHref?: string;
+    /** Google authentication destination. Omit to disable the demo control. */
+    googleHref?: string;
+    /** Microsoft authentication destination. Omit to disable the demo control. */
+    microsoftHref?: string;
+  };
+const {
+  render = true,
+  headingTag: Title = "h2",
+  productName = "Brightpath",
+  homeHref = "/",
+  signInHref,
+  termsHref,
+  privacyHref,
+  googleHref,
+  microsoftHref,
+  theme = "inherit",
+  paddingTop = "medium",
+  paddingBottom = "medium",
+  class: className,
+  ...rest
+} = Astro.props;
+const uid = `signup-${crypto.randomUUID()}`;
+const PanelTitle = Title === "h1" ? "h2" : Title === "h2" ? "h3" : "h4";
+const benefits = [
+  {
+    icon: IconPlug,
+    title: "Bank feeds in minutes",
+    text: "Connect 12,000 banks and cards. Transactions arrive every morning.",
+  },
+  {
+    icon: IconChecks,
+    title: "Matching on autopilot",
+    text: "9 in 10 transactions reconcile before you open the books.",
+  },
+  {
+    icon: IconListCheck,
+    title: "One close checklist",
+    text: "Tasks, owners and due dates for every entity in one place.",
+  },
+  {
+    icon: IconShieldCheck,
+    title: "Ready for your auditor",
+    text: "Every change is logged with who made it and why.",
+  },
+];
+---
+
+<Section
+  {render}
+  {theme}
+  {paddingTop}
+  {paddingBottom}
+  class={className}
+  {...rest}
+>
+  <div class="split-signup_wrap" data-split-signup>
+    <div class="split-signup_left">
+      <a class="split-signup_brand" href={homeHref}>
+        <span class="split-signup_mark">
+          <IconChartBar size="1.25em" aria-hidden="true" />
+        </span>
+        {productName}
+      </a>
+      <div class="split-signup_content">
+        <div data-start>
+          <Title class="split-signup_title text-style-h3">
+            Start your free trial
+          </Title>
+          <p class="split-signup_intro">
+            14 days of every {productName} feature. No card needed.
+          </p>
+          <div class="split-signup_social">
+            {[
+              ["Google", googleHref],
+              ["Microsoft", microsoftHref],
+            ].map(([name, href]) =>
+              href ? (
+                <a class="split-signup_provider" href={href}>
+                  <span aria-hidden="true">
+                    {name === "Google" ? "G" : "⊞"}
+                  </span>
+                  {name}
+                </a>
+              ) : (
+                <button class="split-signup_provider" type="button" disabled>
+                  <span aria-hidden="true">
+                    {name === "Google" ? "G" : "⊞"}
+                  </span>
+                  {name}
+                </button>
+              ),
+            )}
+          </div>
+          <p class="split-signup_divider">or sign up with email</p>
+          <p class="split-signup_demo">
+            Interactive demo. No account is created and no email is sent. Social
+            sign-in requires configured links. Use a sample password.
+          </p>
+          <form class="split-signup_form" data-form>
+            <div
+              class="split-signup_error"
+              role="alert"
+              id={`${uid}-error`}
+              data-error
+              hidden
+            >
+              Demo: <strong data-taken></strong> already has an account.{" "}
+              {signInHref ? (
+                <a href={signInHref}>Sign in instead</a>
+              ) : (
+                <span>Try a different sample email to continue.</span>
+              )}
+            </div>
+            <div>
+              <label class="split-signup_label" for={`${uid}-email`}>
+                Work email
+              </label>
+              <input
+                class="split-signup_input"
+                id={`${uid}-email`}
+                data-email
+                type="email"
+                autocomplete="email"
+                placeholder="amara@kestrel.io"
+                required
+                aria-describedby={`${uid}-hint`}
+              />
+              <p class="split-signup_hint" id={`${uid}-hint`} data-email-hint>
+                In a live signup, we’d send a link to confirm it.
+              </p>
+            </div>
+            <div>
+              <label class="split-signup_label" for={`${uid}-password`}>
+                Password
+              </label>
+              <div class="split-signup_password">
+                <input
+                  class="split-signup_input"
+                  id={`${uid}-password`}
+                  data-password
+                  type="password"
+                  autocomplete="new-password"
+                  required
+                  minlength="8"
+                  pattern="(?=.*[A-Za-z])(?=.*[0-9]).{8,}"
+                  aria-describedby={`${uid}-rules`}
+                />
+                <button
+                  class="split-signup_toggle"
+                  data-toggle
+                  type="button"
+                  aria-label="Show password"
+                  aria-pressed="false"
+                  aria-controls={`${uid}-password`}
+                >
+                  <IconEye size="1.15em" aria-hidden="true" />
+                </button>
+              </div>
+              <ul
+                class="split-signup_rules"
+                id={`${uid}-rules`}
+                aria-live="polite"
+              >
+                {[
+                  ["length", "At least 8 characters"],
+                  ["number", "At least one number"],
+                  ["letter", "At least one letter"],
+                ].map(([rule, text]) => (
+                  <li data-rule={rule}>
+                    <span data-rule-state>○</span> {text}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <button
+              class="split-signup_submit"
+              type="submit"
+              data-submit
+              disabled
+            >
+              <span data-submit-label>Start free trial</span>
+              <IconArrowRight size="1em" aria-hidden="true" />
+            </button>
+            <p class="split-signup_hint">
+              By continuing, you agree to our{" "}
+              {termsHref ? (
+                <a href={termsHref}>Terms of service</a>
+              ) : (
+                "Terms of service (demo)"
+              )}{" "}
+              and{" "}
+              {privacyHref ? (
+                <a href={privacyHref}>Privacy policy</a>
+              ) : (
+                "Privacy policy (demo)"
+              )}
+              .
+            </p>
+          </form>
+          <p class="split-signup_signin">
+            Already using {productName}?{" "}
+            {signInHref ? (
+              <a href={signInHref}>Sign in</a>
+            ) : (
+              <span>Sign in (demo)</span>
+            )}
+          </p>
+        </div>
+        <div data-done hidden>
+          <span class="split-signup_mail">
+            <IconMail size="1.5em" aria-hidden="true" />
+          </span>
+          <Title
+            class="split-signup_title text-style-h3"
+            data-done-title
+            tabindex="-1"
+          >
+            Check your email
+          </Title>
+          <p class="split-signup_intro">
+            Demo confirmation for <strong data-address></strong>. In a live
+            signup, you’d receive a link to start your 14-day trial.
+          </p>
+          <div class="split-signup_confirmation">
+            <p>
+              Didn’t get it? Check your spam folder, or{" "}
+              <button
+                class="split-signup_text-button"
+                data-resend
+                type="button"
+                disabled
+              >
+                resend the link<span data-countdown> in 0:30</span>
+              </button>
+              .
+            </p>
+            <p role="status" data-status></p>
+            <button class="split-signup_text-button" data-back type="button">
+              ← Use a different email
+            </button>
+          </div>
+        </div>
+        <noscript>
+          <p>
+            This interactive demo requires JavaScript. No account is created.
+          </p>
+        </noscript>
+      </div>
+    </div>
+    <aside class="split-signup_panel theme-dark" aria-label="Trial benefits">
+      <div class="split-signup_panel-content">
+        <p class="split-signup_eyebrow">What you get</p>
+        <PanelTitle class="split-signup_panel-title text-style-h3">
+          Close the month in days, not weeks
+        </PanelTitle>
+        <ul class="split-signup_benefits">
+          {benefits.map(({ icon: Icon, title, text }) => (
+            <li class="split-signup_benefit">
+              <span class="split-signup_icon">
+                <Icon size="1.15em" stroke={1.75} aria-hidden="true" />
+              </span>
+              <div>
+                <p class="split-signup_benefit-title">{title}</p>
+                <p class="split-signup_muted">{text}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <figure class="split-signup_quote">
+        <blockquote>
+          <p>
+            “{productName} took our close from nine days to three. The finance
+            team finally leaves on time at month-end.”
+          </p>
+        </blockquote>
+        <figcaption class="split-signup_person">
+          <span class="split-signup_avatar" aria-hidden="true">
+            DM
+          </span>
+          <div>
+            <p>Daniel Mensah</p>
+            <p class="split-signup_muted">
+              Controller, Northwind Foods · sample testimonial
+            </p>
+          </div>
+        </figcaption>
+      </figure>
+    </aside>
+  </div>
+</Section>
+
+<script>
+  function initSplitSignup() {
+    document
+      .querySelectorAll<HTMLElement>("[data-split-signup]")
+      .forEach((root) => {
+        if (root.dataset.initialized) return;
+        root.dataset.initialized = "true";
+        const get = <T extends HTMLElement>(selector: string) =>
+          root.querySelector<T>(selector)!;
+        const form = get<HTMLFormElement>("[data-form]");
+        const email = get<HTMLInputElement>("[data-email]");
+        const password = get<HTMLInputElement>("[data-password]");
+        const hint = get("[data-email-hint]");
+        const originalHint = hint.textContent;
+        const error = get("[data-error]");
+        const submit = get<HTMLButtonElement>("[data-submit]");
+        const toggle = get<HTMLButtonElement>("[data-toggle]");
+        const start = get("[data-start]");
+        const done = get("[data-done]");
+        const resend = get<HTMLButtonElement>("[data-resend]");
+        const countdown = get("[data-countdown]");
+        const status = get("[data-status]");
+        const rules = [...root.querySelectorAll<HTMLElement>("[data-rule]")];
+        let taken = "";
+        let tried = false;
+        let timer: ReturnType<typeof setInterval> | undefined;
+        let pending: ReturnType<typeof setTimeout> | undefined;
+        const checks: Record<string, (value: string) => boolean> = {
+          length: (v) => v.length >= 8,
+          number: (v) => /\d/.test(v),
+          letter: (v) => /[a-z]/i.test(v),
+        };
+        const checkRules = () => {
+          rules.forEach((rule) => {
+            const met = checks[rule.dataset.rule!](password.value);
+            rule.dataset.state = met ? "met" : tried ? "missing" : "pending";
+            rule.querySelector("[data-rule-state]")!.textContent = met
+              ? "✓ Done:"
+              : tried
+                ? "! Missing:"
+                : "○";
+          });
+          password.setAttribute(
+            "aria-invalid",
+            String(tried && !password.validity.valid),
+          );
+        };
+        const showEmail = () => {
+          const invalid = !email.validity.valid;
+          email.setAttribute("aria-invalid", String(invalid));
+          hint.textContent = invalid
+            ? email.validity.valueMissing
+              ? "Enter your work email."
+              : "Enter an email like amara@kestrel.io."
+            : originalHint;
+        };
+        toggle.addEventListener("click", () => {
+          const show = password.type === "password";
+          password.type = show ? "text" : "password";
+          toggle.setAttribute("aria-pressed", String(show));
+          toggle.setAttribute(
+            "aria-label",
+            show ? "Hide password" : "Show password",
+          );
+        });
+        password.addEventListener("input", checkRules);
+        email.addEventListener("blur", () => {
+          if (email.value && error.hidden) showEmail();
+        });
+        email.addEventListener("input", () => {
+          error.hidden = true;
+          email.setAttribute("aria-describedby", hint.id);
+          if (email.getAttribute("aria-invalid") === "true") showEmail();
+        });
+        let focused = false;
+        form.addEventListener(
+          "invalid",
+          (event) => {
+            event.preventDefault();
+            if (event.target === email) showEmail();
+            if (event.target === password) {
+              tried = true;
+              checkRules();
+            }
+            if (!focused) {
+              focused = true;
+              (event.target as HTMLElement).focus();
+              queueMicrotask(() => {
+                focused = false;
+              });
+            }
+          },
+          true,
+        );
+        const startCountdown = () => {
+          clearInterval(timer);
+          const end = Date.now() + 30000;
+          resend.disabled = true;
+          countdown.textContent = " in 0:30";
+          timer = setInterval(() => {
+            const left = Math.max(0, Math.ceil((end - Date.now()) / 1000));
+            countdown.textContent = left
+              ? ` in 0:${String(left).padStart(2, "0")}`
+              : "";
+            if (!left) {
+              clearInterval(timer);
+              resend.disabled = false;
+            }
+          }, 250);
+        };
+        form.addEventListener("submit", (event) => {
+          event.preventDefault();
+          if (submit.disabled || !form.checkValidity()) return;
+          const submitted = email.value.trim();
+          email.readOnly = password.readOnly = true;
+          submit.disabled = true;
+          submit.setAttribute("aria-busy", "true");
+          get("[data-submit-label]").textContent = "Starting trial…";
+          pending = setTimeout(() => {
+            email.readOnly = password.readOnly = false;
+            submit.disabled = false;
+            submit.removeAttribute("aria-busy");
+            get("[data-submit-label]").textContent = "Start free trial";
+            if (!taken || taken === submitted.toLowerCase()) {
+              taken = submitted.toLowerCase();
+              get("[data-taken]").textContent = submitted;
+              error.hidden = false;
+              email.setAttribute("aria-invalid", "true");
+              email.setAttribute("aria-describedby", `${error.id} ${hint.id}`);
+              email.focus();
+              return;
+            }
+            get("[data-address]").textContent = submitted;
+            password.value = "";
+            tried = false;
+            checkRules();
+            status.textContent = "";
+            start.hidden = true;
+            done.hidden = false;
+            get("[data-done-title]").focus();
+            startCountdown();
+          }, 900);
+        });
+        resend.addEventListener("click", () => {
+          status.textContent =
+            "Demo: a new confirmation link would be sent. No email was sent.";
+          startCountdown();
+        });
+        get("[data-back]").addEventListener("click", () => {
+          clearInterval(timer);
+          done.hidden = true;
+          start.hidden = false;
+          email.focus();
+          email.select();
+        });
+        submit.disabled = false;
+        document.addEventListener(
+          "astro:before-swap",
+          () => {
+            clearInterval(timer);
+            clearTimeout(pending);
+          },
+          { once: true },
+        );
+      });
+  }
+  initSplitSignup();
+  document.addEventListener("astro:page-load", initSplitSignup);
+</script>
+
+<style is:global>
+  @layer components {
+    .split-signup_wrap {
+      display: grid;
+      gap: var(--space-2);
+      width: 100%;
+      min-width: 0;
+      background: var(--background);
+      color: var(--text);
+      font-size: var(--text-small);
+      line-height: 1.55;
+      & [hidden] {
+        display: none;
+      }
+      & p,
+      & ul,
+      & figure,
+      & blockquote {
+        margin: 0;
+      }
+      & a {
+        color: inherit;
+      }
+      & button,
+      & input {
+        font: inherit;
+      }
+      & button {
+        cursor: pointer;
+      }
+      & button:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+      & :focus-visible {
+        outline: var(--focus-width) solid var(--text);
+        outline-offset: var(--focus-offset);
+      }
+      & strong {
+        overflow-wrap: anywhere;
+      }
+      @media (width >= 64rem) {
+        grid-template-columns: 1fr 1fr;
+        & .split-signup_left {
+          min-height: 48rem;
+          padding: var(--space-4) var(--space-6);
+        }
+        & .split-signup_panel {
+          padding: var(--space-7);
+        }
+      }
+    }
+    .split-signup_left {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+      padding: var(--space-4) var(--space-2);
+      min-width: 0;
+    }
+    .split-signup_brand {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      align-self: start;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .split-signup_mark {
+      display: grid;
+      place-items: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: var(--radius-small);
+      background: var(--text);
+      color: var(--background);
+    }
+    .split-signup_content {
+      width: 100%;
+      max-width: 25rem;
+      margin: auto;
+      padding-block: var(--space-5);
+    }
+    .split-signup_title {
+      margin: 0 0 var(--space-2);
+    }
+    .split-signup_intro {
+      color: var(--text-2);
+    }
+    .split-signup_social {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-2);
+      margin-top: var(--space-5);
+    }
+    .split-signup_provider {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-2);
+      min-height: 2.75rem;
+      padding: var(--space-1);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-small);
+      background: var(--background-2);
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .split-signup_divider {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding-block: var(--space-4);
+      color: var(--text-2);
+      &::before,
+      &::after {
+        content: "";
+        flex: 1;
+        height: var(--border-width);
+        background: var(--border);
+      }
+    }
+    .split-signup_demo {
+      padding: var(--space-2);
+      border: var(--border-width) dashed var(--border);
+      border-radius: var(--radius-small);
+      font-size: 0.75rem;
+    }
+    .split-signup_form {
+      display: grid;
+      gap: var(--space-3);
+      margin-top: var(--space-3);
+    }
+    .split-signup_label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: var(--space-1);
+    }
+    .split-signup_input {
+      display: block;
+      width: 100%;
+      min-height: 2.75rem;
+      padding: 0.625rem 0.75rem;
+      background: var(--background-2);
+      color: var(--text);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-main);
+      &::placeholder {
+        color: var(--text-2);
+      }
+      &[aria-invalid="true"] {
+        border-color: var(--text);
+        border-width: 0.125rem;
+      }
+    }
+    .split-signup_password {
+      position: relative;
+      & input {
+        padding-right: 3rem;
+      }
+    }
+    .split-signup_toggle {
+      position: absolute;
+      right: 0.25rem;
+      top: 0.25rem;
+      width: 2.25rem;
+      height: 2.25rem;
+      display: grid;
+      place-items: center;
+      background: transparent;
+      color: var(--text-2);
+      border: 0;
+      border-radius: var(--radius-small);
+    }
+    .split-signup_hint {
+      padding-top: var(--space-1);
+      color: var(--text-2);
+      font-size: 0.75rem;
+    }
+    .split-signup_rules {
+      list-style: none;
+      padding: var(--space-2) 0 0;
+      font-size: 0.75rem;
+      color: var(--text-2);
+      & [data-state="met"] {
+        color: var(--text);
+      }
+      & [data-state="missing"] {
+        color: var(--text);
+        font-weight: 700;
+      }
+    }
+    .split-signup_submit {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      min-height: 2.75rem;
+      border: var(--border-width) solid var(--button-border);
+      border-radius: var(--radius-main);
+      background: var(--button-background);
+      color: var(--button-text);
+      font-weight: 600;
+      &:hover:enabled {
+        background: var(--button-background-hover);
+        color: var(--button-text-hover);
+      }
+    }
+    .split-signup_error {
+      border: 0.125rem solid var(--border);
+      border-radius: var(--radius-small);
+      padding: var(--space-3);
+      background: var(--background-2);
+    }
+    .split-signup_signin {
+      padding-top: var(--space-5);
+    }
+    .split-signup_panel {
+      position: relative;
+      isolation: isolate;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-7);
+      padding: var(--space-5);
+      background: var(--background);
+      color: var(--text);
+      border: var(--border-width) solid var(--border);
+      border-radius: calc(var(--radius-main) * 2);
+      overflow: hidden;
+      &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        opacity: 0.06;
+        background-image:
+          linear-gradient(
+            to right,
+            currentColor 0.0625rem,
+            transparent 0.0625rem
+          ),
+          linear-gradient(
+            to bottom,
+            currentColor 0.0625rem,
+            transparent 0.0625rem
+          );
+        background-size: 2rem 2rem;
+        mask-image: radial-gradient(
+          ellipse at top right,
+          black,
+          transparent 70%
+        );
+      }
+    }
+    .split-signup_eyebrow {
+      color: var(--text-2);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.75rem;
+      font-family: monospace;
+    }
+    .split-signup_panel-title {
+      max-width: 23ch;
+      margin: var(--space-3) 0 var(--space-6);
+    }
+    .split-signup_benefits {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+      gap: var(--space-5) var(--space-4);
+      list-style: none;
+      padding: 0;
+    }
+    .split-signup_benefit {
+      display: flex;
+      gap: var(--space-3);
+    }
+    .split-signup_icon,
+    .split-signup_avatar {
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: var(--radius-small);
+      background: var(--background-3);
+    }
+    .split-signup_benefit-title {
+      font-weight: 600;
+    }
+    .split-signup_muted {
+      color: var(--text-2);
+    }
+    .split-signup_quote {
+      padding-top: var(--space-5);
+      border-top: var(--border-width) solid var(--border);
+    }
+    .split-signup_person {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-top: var(--space-4);
+      font-size: 0.8125rem;
+    }
+    .split-signup_avatar {
+      border-radius: var(--radius-round);
+    }
+    .split-signup_mail {
+      display: grid;
+      place-items: center;
+      width: 3rem;
+      height: 3rem;
+      margin-bottom: var(--space-4);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-main);
+    }
+    .split-signup_confirmation {
+      display: grid;
+      gap: var(--space-3);
+      margin-top: var(--space-5);
+      padding-top: var(--space-4);
+      border-top: var(--border-width) solid var(--border);
+    }
+    .split-signup_text-button {
+      padding: 0;
+      justify-self: start;
+      border: 0;
+      border-radius: var(--radius-small);
+      background: transparent;
+      color: var(--text);
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+    }
+  }
+</style>

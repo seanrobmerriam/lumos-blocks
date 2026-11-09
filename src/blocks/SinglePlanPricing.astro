@@ -1,0 +1,478 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import {
+  IconCheck,
+  IconCreditCard,
+  IconReceipt,
+  IconRestore,
+} from "@tabler/icons-astro";
+
+type Props = Pick<
+  ComponentProps<typeof Section>,
+  "render" | "theme" | "paddingTop" | "paddingBottom"
+> &
+  HTMLAttributes<"section"> & {
+    /** Trial signup destination. */
+    trialHref?: string;
+  };
+const {
+  render = true,
+  trialHref = "#installation",
+  theme = "inherit",
+  paddingTop = "large",
+  paddingBottom = "large",
+  id = `single-plan-pricing-${crypto.randomUUID()}`,
+  class: className,
+  ...rest
+} = Astro.props;
+const titleId = `${id}-title`;
+const planId = `${id}-plan`;
+const statusId = `${id}-status`;
+const groups = [
+  {
+    name: "Sites",
+    features: [
+      "Unlimited sites and pages",
+      "Your own domain, with free SSL",
+      "Templates made for photography",
+      "Password-protected client pages",
+    ],
+  },
+  {
+    name: "Galleries",
+    features: [
+      "Client proofing and favorites",
+      "Full-resolution downloads",
+      "500 GB of storage",
+      "Watermarks you design",
+    ],
+  },
+  {
+    name: "Selling",
+    features: [
+      "Prints, downloads and session bookings",
+      "0% commission from Lumora",
+      "Card, Apple Pay and PayPal checkout",
+      "Sales tax worked out for 40 countries",
+    ],
+  },
+  {
+    name: "Help",
+    features: [
+      "Email answers within one working day",
+      "We move your old site over for free",
+      "A 30-minute call to set up your shop",
+      "99.9% uptime, with a public status page",
+    ],
+  },
+];
+const terms = [
+  { icon: IconCreditCard, text: "No card needed to start the trial" },
+  {
+    icon: IconReceipt,
+    text: "Prices in US dollars, excluding sales tax and VAT",
+  },
+  {
+    icon: IconRestore,
+    text: "Full refund within 30 days of your first payment",
+  },
+];
+---
+
+<Section
+  {render}
+  {theme}
+  {paddingTop}
+  {paddingBottom}
+  {id}
+  class={className}
+  aria-labelledby={titleId}
+  data-single-plan-pricing
+  {...rest}
+>
+  <ContentWrapper centered>
+    <p class="pricing-solo-eyebrow_wrap">Pricing</p>
+    <Heading tag="h2" variant="h2" id={titleId} maxWidth={28}>
+      One plan. Every feature. No add-ons.
+    </Heading>
+    <Paragraph variant="large" maxWidth={57}>
+      Lumora is one price for everything below, on as many sites as you run. No
+      per-visitor fees and no commission on what you sell.
+    </Paragraph>
+  </ContentWrapper>
+  <article class="pricing-solo_wrap" aria-labelledby={planId}>
+    <div class="pricing-solo_intro">
+      <h3 class="pricing-solo_name text-style-h5" id={planId}>
+        Lumora
+      </h3>
+      <p class="pricing-solo_description text-style-small">
+        Portfolio sites, client galleries and a shop, for photographers and
+        small studios.
+      </p>
+    </div>
+    <div class="pricing-solo_panel">
+      <p class="pricing-solo_price">
+        <strong data-monthly="$16" data-yearly="$12">
+          $12
+        </strong>
+        <span>per month</span>
+      </p>
+      <p
+        class="pricing-solo_billing"
+        data-monthly="Billed every month"
+        data-yearly="Billed $144 once a year"
+      >
+        Billed $144 once a year
+      </p>
+      <fieldset class="pricing-solo_control" data-solo-billing hidden>
+        <legend>How you pay</legend>
+        <div class="pricing-solo_options">
+          <label class="pricing-solo_option">
+            <input type="radio" name={`${id}-billing`} value="monthly" />
+            <span class="pricing-solo_option-text">
+              <strong>Monthly</strong>
+              <span>Cancel any month</span>
+            </span>
+            <strong class="pricing-solo_amount">$16 a month</strong>
+          </label>
+          <label class="pricing-solo_option">
+            <input type="radio" name={`${id}-billing`} value="yearly" checked />
+            <span class="pricing-solo_option-text">
+              <strong>
+                Yearly <span class="pricing-solo_saving">Save 25%</span>
+              </strong>
+              <span>$12 a month</span>
+            </span>
+            <strong class="pricing-solo_amount">$144 a year</strong>
+          </label>
+        </div>
+      </fieldset>
+      <div class="pricing-solo_action">
+        <Button
+          element="link"
+          href={trialHref}
+          class="width-full text-style-small"
+        >
+          Start 14-day trial
+        </Button>
+      </div>
+      <p
+        class="pricing-solo_status"
+        id={statusId}
+        role="status"
+        data-monthly="After the trial, $16 is charged every month. Cancel before your trial ends and you pay nothing."
+        data-yearly="After the trial, $144 is charged once a year. Cancel before your trial ends and you pay nothing."
+      >
+        After the trial, $144 is charged once a year. Cancel before your trial
+        ends and you pay nothing.
+      </p>
+      <ul class="pricing-solo_terms">
+        {terms.map(({ icon: Icon, text }) => (
+          <li>
+            <Icon size="1.1em" stroke={1.75} aria-hidden="true" />
+            <span>{text}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class="pricing-solo_features">
+      <h4 class="pricing-solo_includes text-style-small">
+        Everything that’s included
+      </h4>
+      <div class="pricing-solo_groups">
+        {groups.map((group, i) => (
+          <div>
+            <h5
+              class="pricing-solo_group-title text-style-small"
+              id={`${id}-group-${i}`}
+            >
+              {group.name}
+            </h5>
+            <ul aria-labelledby={`${id}-group-${i}`}>
+              {group.features.map((feature) => (
+                <li>
+                  <IconCheck size="1.15em" stroke={1.75} aria-hidden="true" />
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </article>
+</Section>
+
+<script>
+  function initializeSinglePlanPricing() {
+    for (const section of document.querySelectorAll<HTMLElement>(
+      "[data-single-plan-pricing]",
+    )) {
+      if (section.dataset.soloReady) continue;
+      section.dataset.soloReady = "true";
+      const control = section.querySelector<HTMLFieldSetElement>(
+        "[data-solo-billing]",
+      );
+      if (!control) continue;
+      const update = () => {
+        const selected = control.querySelector<HTMLInputElement>(
+          'input[type="radio"]:checked',
+        );
+        const period = selected?.value === "monthly" ? "monthly" : "yearly";
+        for (const item of section.querySelectorAll<HTMLElement>(
+          "[data-monthly][data-yearly]",
+        )) {
+          const value = item.dataset[period];
+          if (value !== undefined && item.textContent !== value)
+            item.textContent = value;
+        }
+      };
+      control.addEventListener("change", update);
+      update();
+      control.hidden = false;
+    }
+  }
+  initializeSinglePlanPricing();
+  document.addEventListener("astro:page-load", initializeSinglePlanPricing);
+</script>
+
+<style is:global>
+  @layer components {
+    .pricing-solo-eyebrow_wrap {
+      margin: 0;
+      color: var(--text-2);
+      font-family: ui-monospace, monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    .pricing-solo_wrap {
+      display: grid;
+      width: 100%;
+      max-width: 72rem;
+      margin-inline: auto;
+      min-width: 0;
+      background: var(--background);
+      color: var(--text);
+      border: var(--border-width) solid var(--border);
+      border-radius: calc(var(--radius-main) * 2);
+      @media (width >= 30rem) {
+        & .pricing-solo_options,
+        & .pricing-solo_groups {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      @media (width >= 64rem) {
+        grid-template-columns: minmax(0, 1fr) 24rem;
+        grid-template-rows: auto 1fr;
+        & > .pricing-solo_intro {
+          grid-column: 1;
+          grid-row: 1;
+        }
+        & > .pricing-solo_panel {
+          grid-column: 2;
+          grid-row: 1 / span 2;
+        }
+        & > .pricing-solo_features {
+          grid-column: 1;
+          grid-row: 2;
+        }
+        & .pricing-solo_options {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+    }
+    .pricing-solo_intro {
+      min-width: 0;
+      padding: var(--space-5);
+    }
+    .pricing-solo_name {
+      margin: 0;
+    }
+    .pricing-solo_description {
+      margin: var(--space-1) 0 0;
+      max-width: 50ch;
+      color: var(--text-2);
+    }
+    .pricing-solo_panel {
+      min-width: 0;
+      margin: var(--space-1);
+      padding: var(--space-4);
+      border-radius: calc(var(--radius-main) * 1.5);
+      background: var(--background-2);
+    }
+    .pricing-solo_price {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: var(--space-1);
+      margin: 0;
+      & > strong {
+        font-size: 3rem;
+        font-weight: var(--primary-bold);
+        line-height: 1.1;
+        letter-spacing: var(--letter-spacing-tight);
+        font-variant-numeric: tabular-nums;
+      }
+      & > span {
+        font-size: 0.875rem;
+        color: var(--text-2);
+      }
+    }
+    .pricing-solo_billing {
+      margin: var(--space-1) 0 0;
+      font-size: 0.8125rem;
+      color: var(--text-2);
+    }
+    .pricing-solo_control {
+      min-width: 0;
+      border: 0;
+      padding: 0;
+      margin: var(--space-4) 0 0;
+      & > legend {
+        padding: 0;
+        font-size: 0.875rem;
+        font-weight: var(--primary-medium);
+      }
+    }
+    .pricing-solo_options {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-2);
+      margin-top: var(--space-2);
+    }
+    .pricing-solo_option {
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: start;
+      gap: var(--space-2);
+      padding: var(--space-3);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-main);
+      background: var(--background);
+      cursor: pointer;
+      transition:
+        border-color var(--hover-duration) var(--hover-ease),
+        box-shadow var(--hover-duration) var(--hover-ease);
+      &:hover {
+        border-color: var(--text-2);
+      }
+      &:has(:checked) {
+        border-color: var(--text);
+        box-shadow: 0 0 0 var(--border-width) var(--text);
+      }
+      & > input {
+        appearance: auto;
+        flex-shrink: 0;
+        width: 1rem;
+        height: 1rem;
+        margin: 0.125rem 0 0;
+        accent-color: var(--text);
+        cursor: pointer;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+      }
+    }
+    .pricing-solo_option-text {
+      flex: 1;
+      min-width: 5rem;
+      & > strong {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.375em;
+        font-size: 0.875rem;
+        font-weight: var(--primary-medium);
+      }
+      & > span {
+        display: block;
+        margin-top: 0.125rem;
+        font-size: 0.8125rem;
+        color: var(--text-2);
+      }
+    }
+    .pricing-solo_amount {
+      font-size: 0.8125rem;
+      font-weight: var(--primary-medium);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+    .pricing-solo_saving {
+      padding: 0.125em 0.5em;
+      border-radius: var(--radius-round);
+      font-size: 0.6875rem;
+      white-space: nowrap;
+      color: light-dark(#16633e, #98e2b5);
+      background: light-dark(#e7f5ec, #173429);
+    }
+    .pricing-solo_action {
+      margin-top: var(--space-4);
+    }
+    .pricing-solo_status {
+      margin: var(--space-2) 0 0;
+      color: var(--text-2);
+      font-size: 0.8125rem;
+    }
+    .pricing-solo_terms {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      list-style: none;
+      padding: var(--space-4) 0 0;
+      margin: var(--space-4) 0 0;
+      border-top: var(--border-width) solid var(--border);
+      font-size: 0.8125rem;
+      color: var(--text-2);
+      & > li {
+        display: flex;
+        align-items: start;
+        gap: var(--space-1);
+      }
+      & svg {
+        flex-shrink: 0;
+        margin-top: 0.2em;
+      }
+    }
+    .pricing-solo_features {
+      min-width: 0;
+      margin: var(--space-5);
+      padding-top: var(--space-4);
+      border-top: var(--border-width) solid var(--border);
+    }
+    .pricing-solo_includes,
+    .pricing-solo_group-title {
+      margin: 0;
+      font-weight: var(--primary-medium);
+    }
+    .pricing-solo_groups {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-5);
+      margin-top: var(--space-4);
+      & ul {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        list-style: none;
+        padding: 0;
+        margin: var(--space-3) 0 0;
+        font-size: var(--text-small);
+      }
+      & li {
+        display: flex;
+        gap: var(--space-2);
+      }
+      & svg {
+        flex-shrink: 0;
+        margin-top: 0.2em;
+      }
+    }
+  }
+</style>

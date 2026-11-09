@@ -1,0 +1,615 @@
+---
+import { randomUUID } from "node:crypto";
+import type { ComponentProps } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import {
+  IconLayoutGrid,
+  IconCalendar,
+  IconClock,
+  IconBan,
+  IconPencil,
+  IconZoomScan,
+  IconLink,
+  IconFileDownload,
+  IconArrowRight,
+  IconLoader2,
+} from "@tabler/icons-astro";
+
+type Props = Omit<
+  ComponentProps<typeof Section>,
+  "gap" | "align" | "fullHeight" | "containerClass" | "containerAttrs"
+> & {
+  /** Publication name. */
+  publication?: string;
+  /** Newsletter headline. */
+  heading?: string;
+  /** Newsletter introduction. */
+  description?: string;
+  /** POST endpoint accepting an email field; a successful response confirms receipt. Omit for a local demonstration. */
+  endpoint?: string;
+  /** Published privacy policy destination. */
+  privacyHref?: string;
+  /** Published sample issue destination. Omit to link to the contents preview. */
+  sampleHref?: string;
+};
+const {
+  render = true,
+  publication = "Gridline",
+  heading = "One good design idea, every other Thursday",
+  description = "Written by Lena Fischer, a product designer at Lumora, for the 21,300 designers who want ideas they can use on Monday.",
+  endpoint,
+  privacyHref = "#",
+  sampleHref,
+  theme = "inherit",
+  paddingTop = "medium",
+  paddingBottom = "medium",
+  class: className,
+  ...rest
+} = Astro.props;
+const uid = `newsletter-${randomUUID()}`;
+const facts = [
+  { icon: IconCalendar, text: "Every other Thursday" },
+  { icon: IconClock, text: "6-minute read" },
+  { icon: IconBan, text: "No ads" },
+];
+const contents = [
+  {
+    icon: IconPencil,
+    title: "One essay",
+    text: "1,200 words on a single design decision, with the screens that show it.",
+  },
+  {
+    icon: IconZoomScan,
+    title: "A teardown",
+    text: "A real product flow, annotated: what works and what we’d change.",
+  },
+  {
+    icon: IconLink,
+    title: "Five links",
+    text: "Talks, articles and tools from the fortnight, each with a line on why.",
+  },
+  {
+    icon: IconFileDownload,
+    title: "A file to keep",
+    text: "A checklist or Figma file you can duplicate and use the same day.",
+  },
+];
+---
+
+<Section
+  {render}
+  {theme}
+  {paddingTop}
+  {paddingBottom}
+  class={className}
+  {...rest}
+>
+  <div
+    class="newsletter-card_wrap"
+    data-newsletter-card
+    data-endpoint={endpoint}
+  >
+    <div class="newsletter-card_intro">
+      <p class="newsletter-card_publication">
+        <span class="newsletter-card_mark">
+          <IconLayoutGrid size="1.2em" stroke={1.75} aria-hidden="true" />
+        </span>
+        {publication}
+      </p>
+      <h2 class="newsletter-card_heading text-style-h2">{heading}</h2>
+      <p class="newsletter-card_description text-style-main">{description}</p>
+      <ul class="newsletter-card_facts" aria-label="About the newsletter">
+        {facts.map(({ icon: Icon, text }) => (
+          <li class="newsletter-card_fact">
+            <Icon size="1.15em" stroke={1.75} aria-hidden="true" />
+            {text}
+          </li>
+        ))}
+      </ul>
+      <form class="newsletter-card_form" action={endpoint} method="post">
+        <fieldset class="newsletter-card_fields" disabled={!endpoint}>
+          <label class="newsletter-card_label" for={`${uid}-email`}>
+            Email address
+          </label>
+          <div class="newsletter-card_controls">
+            <input
+              class="newsletter-card_input"
+              id={`${uid}-email`}
+              name="email"
+              type="email"
+              autocomplete="email"
+              required
+              placeholder="lena@fischer.studio"
+              aria-describedby={`${uid}-help`}
+            />
+            <div class="newsletter-card_error-slot">
+              <p
+                class="newsletter-card_error"
+                id={`${uid}-error`}
+                aria-live="polite"
+                hidden
+              >
+                Enter an email like lena@fischer.studio.
+              </p>
+            </div>
+            <button class="newsletter-card_submit" type="submit">
+              <span class="newsletter-card_idle">Get {publication}</span>
+              <span class="newsletter-card_busy">
+                <IconLoader2 size="1.1em" stroke={1.75} aria-hidden="true" />{" "}
+                Subscribing…
+              </span>
+            </button>
+          </div>
+        </fieldset>
+        <p class="newsletter-card_help text-style-small" id={`${uid}-help`}>
+          Every other Thursday and nothing in between. Unsubscribe in one click
+          from any issue. Read our <a href={privacyHref}>privacy policy</a>.
+        </p>
+        {!endpoint && (
+          <p class="newsletter-card_demo text-style-small">
+            Interactive demo. Your address stays in this browser; no email will
+            be sent.
+          </p>
+        )}
+        <noscript>
+          <p class="newsletter-card_help text-style-small">
+            {endpoint
+              ? "Submit to continue with our subscription service."
+              : "Enable JavaScript to try this local signup demo."}
+          </p>
+        </noscript>
+      </form>
+      <div class="newsletter-card_done" hidden>
+        <h3 class="newsletter-card_done-title text-style-h5" tabindex="-1">
+          {endpoint ? "Subscription request received" : "Demo complete"}
+        </h3>
+        <p class="newsletter-card_help text-style-small">
+          {endpoint
+            ? "Your subscription request was submitted for "
+            : "You tried the signup with "}
+          <strong class="newsletter-card_address"></strong>.{" "}
+          {endpoint
+            ? "Follow any next steps provided by the newsletter service."
+            : "No address was saved and no confirmation email was sent."}
+        </p>
+        <button class="newsletter-card_change" type="button">
+          Use a different email
+        </button>
+      </div>
+    </div>
+    <aside class="newsletter-card_contents" aria-labelledby={`${uid}-contents`}>
+      <h3
+        class="newsletter-card_contents-title text-style-h5"
+        id={`${uid}-contents`}
+      >
+        In every issue
+      </h3>
+      <ul class="newsletter-card_list">
+        {contents.map(({ icon: Icon, title, text }) => (
+          <li class="newsletter-card_item">
+            <span class="newsletter-card_icon">
+              <Icon size="1.15em" stroke={1.75} aria-hidden="true" />
+            </span>
+            <div>
+              <p class="newsletter-card_item-title">{title}</p>
+              <p class="newsletter-card_item-text text-style-small">{text}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+      <div class="newsletter-card_sample">
+        <a
+          class="newsletter-card_sample-link"
+          href={sampleHref ?? `#${uid}-contents`}
+        >
+          {sampleHref ? "Read a sample issue" : "Explore the issue contents"}
+          <IconArrowRight size="1.15em" stroke={1.75} aria-hidden="true" />
+        </a>
+        <p class="newsletter-card_sample-note">
+          Issue 86 · Empty states that teach
+        </p>
+      </div>
+    </aside>
+  </div>
+</Section>
+
+<script>
+  function initNewsletters() {
+    document
+      .querySelectorAll<HTMLElement>("[data-newsletter-card]")
+      .forEach((root) => {
+        if (root.dataset.initialized) return;
+        const form = root.querySelector<HTMLFormElement>("form")!;
+        const fields = root.querySelector<HTMLFieldSetElement>("fieldset")!;
+        const email = root.querySelector<HTMLInputElement>(
+          'input[type="email"]',
+        )!;
+        const error = root.querySelector<HTMLElement>(
+          ".newsletter-card_error",
+        )!;
+        const submit = root.querySelector<HTMLButtonElement>(
+          'button[type="submit"]',
+        )!;
+        const done = root.querySelector<HTMLElement>(".newsletter-card_done")!;
+        const title = root.querySelector<HTMLElement>(
+          ".newsletter-card_done-title",
+        )!;
+        const address = root.querySelector<HTMLElement>(
+          ".newsletter-card_address",
+        )!;
+        const change = root.querySelector<HTMLButtonElement>(
+          ".newsletter-card_change",
+        )!;
+        const description = email.getAttribute("aria-describedby")!;
+        const mark = () => {
+          const wrong = !email.validity.valid;
+          error.textContent = "Enter an email like lena@fischer.studio.";
+          error.hidden = !wrong;
+          email.setAttribute("aria-invalid", String(wrong));
+          email.setAttribute(
+            "aria-describedby",
+            wrong ? `${error.id} ${description}` : description,
+          );
+        };
+        email.addEventListener("invalid", (event) => {
+          event.preventDefault();
+          mark();
+          email.focus();
+        });
+        email.addEventListener("blur", () => {
+          if (email.value) mark();
+        });
+        email.addEventListener("input", () => {
+          if (!error.hidden) mark();
+        });
+        form.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          if (submit.disabled || !form.reportValidity()) return;
+          const value = email.value;
+          const data = new FormData(form);
+          submit.disabled = true;
+          email.readOnly = true;
+          submit.setAttribute("aria-busy", "true");
+          error.hidden = true;
+          try {
+            if (root.dataset.endpoint) {
+              const response = await fetch(root.dataset.endpoint, {
+                method: "POST",
+                body: data,
+                headers: { Accept: "application/json" },
+                signal: AbortSignal.timeout(15000),
+              });
+              if (!response.ok) throw new Error("Subscription request failed");
+            } else {
+              await new Promise((resolve) => setTimeout(resolve, 700));
+            }
+            if (!root.isConnected) return;
+            address.textContent = value;
+            form.hidden = true;
+            done.hidden = false;
+            title.focus();
+          } catch {
+            error.textContent =
+              "We couldn’t submit your request. Please try again.";
+            error.hidden = false;
+            email.setAttribute(
+              "aria-describedby",
+              `${error.id} ${description}`,
+            );
+            email.focus();
+          } finally {
+            submit.disabled = false;
+            email.readOnly = false;
+            submit.removeAttribute("aria-busy");
+          }
+        });
+        change.addEventListener("click", () => {
+          done.hidden = true;
+          form.hidden = false;
+          email.focus();
+          email.select();
+        });
+        root.dataset.initialized = "true";
+        fields.disabled = false;
+      });
+  }
+  initNewsletters();
+  document.addEventListener("astro:page-load", initNewsletters);
+</script>
+
+<style is:global>
+  @layer components {
+    .newsletter-card_wrap {
+      display: grid;
+      gap: var(--space-7);
+      min-width: 0;
+      padding: clamp(1.25rem, 4vw, 3rem);
+      border: var(--border-width) solid var(--border);
+      border-radius: calc(var(--radius-main) * 2);
+      background: var(--background-2);
+      color: var(--text);
+      & [hidden] {
+        display: none;
+      }
+      & :is(a, button, input):focus-visible {
+        outline: var(--focus-width) solid var(--text);
+        outline-offset: var(--focus-offset);
+      }
+      @media (width >= 64rem) {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        align-items: center;
+      }
+      @media (width >= 30rem) {
+        & .newsletter-card_controls {
+          grid-template-columns: minmax(0, 1fr) auto;
+        }
+        & .newsletter-card_submit {
+          grid-column: 2;
+          grid-row: 1;
+        }
+        & .newsletter-card_error-slot {
+          grid-column: 1 / -1;
+          grid-row: 2;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        & .newsletter-card_busy > svg {
+          animation: none;
+        }
+        & .newsletter-card_sample-link > svg {
+          transition: none;
+        }
+      }
+    }
+    .newsletter-card_intro {
+      min-width: 0;
+    }
+    .newsletter-card_publication {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin: 0 0 var(--space-5);
+      font-weight: 600;
+    }
+    .newsletter-card_mark,
+    .newsletter-card_icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: var(--radius-small);
+    }
+    .newsletter-card_mark {
+      background: var(--background);
+      border: var(--border-width) solid var(--border);
+    }
+    .newsletter-card_heading {
+      max-width: 22ch;
+      margin: 0;
+    }
+    .newsletter-card_description {
+      margin: var(--space-4) 0 0;
+      color: var(--text-2);
+    }
+    .newsletter-card_facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      list-style: none;
+      margin: var(--space-5) 0;
+      padding: 0;
+    }
+    .newsletter-card_fact {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375em;
+      padding: 0.3em 0.8em;
+      border-radius: var(--radius-round);
+      border: var(--border-width) solid var(--border);
+      background: var(--background);
+      font-size: 0.8125rem;
+      font-weight: 500;
+    }
+    .newsletter-card_fields {
+      border: 0;
+      padding: 0;
+      margin: 0;
+      min-width: 0;
+    }
+    .newsletter-card_label {
+      display: block;
+      margin-bottom: var(--space-1);
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .newsletter-card_controls {
+      display: grid;
+      column-gap: var(--space-2);
+    }
+    .newsletter-card_input {
+      min-width: 0;
+      width: 100%;
+      min-height: 2.75rem;
+      padding: 0.65em 0.9em;
+      border-radius: var(--radius-main);
+      border: var(--border-width) solid var(--border);
+      background: var(--background);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.9375rem;
+    }
+    .newsletter-card_input::placeholder {
+      color: var(--text-2);
+      opacity: 1;
+    }
+    .newsletter-card_input[aria-invalid="true"] {
+      border-width: var(--focus-width);
+      border-color: var(--text);
+    }
+    .newsletter-card_error-slot {
+      min-height: 2.25rem;
+      padding-top: 0.375rem;
+    }
+    .newsletter-card_error {
+      margin: 0;
+      font-size: 0.8125rem;
+      font-weight: 600;
+    }
+    .newsletter-card_submit {
+      display: inline-grid;
+      place-items: center;
+      min-height: 2.75rem;
+      padding: 0.65em 1.25em;
+      border: var(--border-width) solid var(--button-border);
+      border-radius: var(--radius-main);
+      background: var(--button-background);
+      color: var(--button-text);
+      font: inherit;
+      font-weight: 600;
+      font-size: 0.9375rem;
+      cursor: pointer;
+    }
+    .newsletter-card_submit:hover {
+      background: var(--button-background-hover);
+      color: var(--button-text-hover);
+      border-color: var(--button-border-hover);
+    }
+    .newsletter-card_submit:disabled {
+      cursor: wait;
+    }
+    .newsletter-card_idle,
+    .newsletter-card_busy {
+      grid-area: 1 / 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+    .newsletter-card_busy {
+      visibility: hidden;
+    }
+    .newsletter-card_submit[aria-busy="true"] .newsletter-card_idle {
+      visibility: hidden;
+    }
+    .newsletter-card_submit[aria-busy="true"] .newsletter-card_busy {
+      visibility: visible;
+    }
+    .newsletter-card_busy > svg {
+      animation: newsletter-card-spin 1s linear infinite;
+    }
+    .newsletter-card_help,
+    .newsletter-card_demo {
+      margin: var(--space-2) 0 0;
+      color: var(--text-2);
+    }
+    .newsletter-card_help a {
+      color: var(--text);
+      text-decoration: underline;
+      text-underline-offset: 0.15em;
+    }
+    .newsletter-card_demo {
+      font-style: italic;
+    }
+    .newsletter-card_done {
+      padding: var(--space-4);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-main);
+      background: var(--background);
+    }
+    .newsletter-card_done-title {
+      margin: 0;
+    }
+    .newsletter-card_address {
+      overflow-wrap: anywhere;
+      color: var(--text);
+    }
+    .newsletter-card_change {
+      margin-top: var(--space-3);
+      background: none;
+      border: 0;
+      padding: 0;
+      color: var(--text);
+      font: inherit;
+      font-size: 0.875rem;
+      text-decoration: underline;
+      text-underline-offset: 0.15em;
+      cursor: pointer;
+    }
+    .newsletter-card_contents {
+      container-type: inline-size;
+      min-width: 0;
+      padding: clamp(1.25rem, 3vw, 2rem);
+      border: var(--border-width) solid var(--border);
+      border-radius: calc(var(--radius-main) * 2);
+      background: var(--background);
+    }
+    .newsletter-card_contents-title {
+      margin: 0;
+    }
+    .newsletter-card_list {
+      display: grid;
+      gap: var(--space-5) var(--space-6);
+      list-style: none;
+      margin: var(--space-5) 0 0;
+      padding: 0;
+      @container (width >= 36rem) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    .newsletter-card_item {
+      display: flex;
+      gap: var(--space-3);
+      min-width: 0;
+      & > div {
+        min-width: 0;
+      }
+    }
+    .newsletter-card_icon {
+      background: var(--background-2);
+    }
+    .newsletter-card_item-title {
+      margin: 0;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    .newsletter-card_item-text {
+      margin: var(--space-1) 0 0;
+      color: var(--text-2);
+    }
+    .newsletter-card_sample {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2) var(--space-4);
+      margin-top: var(--space-6);
+      padding-top: var(--space-5);
+      border-top: var(--border-width) solid var(--border);
+    }
+    .newsletter-card_sample-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35em;
+      color: var(--text);
+      font-size: 0.875rem;
+      font-weight: 600;
+      & > svg {
+        transition: transform 0.2s;
+      }
+      &:hover > svg {
+        transform: translateX(0.125rem);
+      }
+    }
+    .newsletter-card_sample-note {
+      margin: 0;
+      color: var(--text-2);
+      font-size: 0.8125rem;
+    }
+    @keyframes newsletter-card-spin {
+      to {
+        transform: rotate(1turn);
+      }
+    }
+  }
+</style>

@@ -7,7 +7,7 @@ type Props = HTMLAttributes<"div"> & {
   /** Set to `false` to omit the component. */
   render?: boolean;
   /** Tab layout. */
-  variant?: "horizontal" | "buttons" | "side";
+  variant?: "horizontal" | "buttons" | "side" | "terminal";
   /** Panel playback. */
   playback?: "manual" | "auto";
   /** Show all panels in design mode. */
@@ -287,6 +287,38 @@ const panels = await slotContent(Astro.slots);
       display: grid;
       gap: var(--space-6);
       width: 100%;
+
+      &.terminal {
+        gap: 0;
+        border: var(--border-width) solid var(--border);
+        border-radius: var(--radius-main);
+        background: var(--background);
+        overflow: clip;
+
+        & .tabs_bar {
+          padding: var(--space-2) var(--space-3);
+          background: var(--background-2);
+          border-bottom: var(--border-width) solid var(--border);
+        }
+        & .tabs_links {
+          gap: var(--space-1);
+        }
+        & .tabs_link {
+          flex: none;
+          min-width: 0;
+          padding: 0.5em 0.875em;
+          border: var(--border-width) solid transparent;
+          border-radius: var(--radius-small);
+          font-size: var(--text-small);
+          line-height: 1.2;
+          color: var(--text-2);
+          &.is-active {
+            background: var(--background);
+            border-color: var(--border);
+            color: var(--text);
+          }
+        }
+      }
 
       &.side {
         @media (width >= 48rem) {

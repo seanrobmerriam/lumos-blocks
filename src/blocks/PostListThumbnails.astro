@@ -1,0 +1,389 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Eyebrow from "@/components/typography/Eyebrow.astro";
+import { IconArrowRight } from "@tabler/icons-astro";
+
+interface Post {
+  title: string;
+  href: string;
+  category: string;
+  date: string;
+  dateLabel: string;
+  excerpt: string;
+  image: string;
+  imageAlt: string;
+  author: string;
+  authorImage?: string | null;
+  initials?: string;
+  readTime: string;
+}
+
+type Props = Pick<
+  ComponentProps<typeof Section>,
+  "render" | "theme" | "paddingTop" | "paddingBottom"
+> &
+  HTMLAttributes<"section"> & {
+    /** Journal posts. */
+    posts?: Post[];
+    /** All articles destination. */
+    allArticlesHref?: string;
+  };
+const defaultPosts: Post[] = [
+  {
+    title: "Sketching live with clients, on one shared tablet",
+    href: "#",
+    category: "Process",
+    date: "2026-10-16",
+    dateLabel: "Oct 16, 2026",
+    excerpt:
+      "We stopped presenting finished concepts in first meetings. Drawing together gets us to the right idea a week sooner.",
+    image: "https://readymadeui.com/images/digital-img-6.webp",
+    imageAlt:
+      "Illustration of a hand sketching a car on a tablet, surrounded by design app icons",
+    author: "Inês Carvalho",
+    authorImage: "https://readymadeui.com/team-4.webp",
+    initials: "",
+    readTime: "7 min read",
+  },
+  {
+    title: "Product photos with one window and a phone",
+    href: "#",
+    category: "Photography",
+    date: "2026-10-02",
+    dateLabel: "Oct 2, 2026",
+    excerpt:
+      "The north-facing window, the €12 tripod and the white card we use for every client's launch photos.",
+    image: "https://readymadeui.com/images/gallery-img-7.webp",
+    imageAlt:
+      "Phone on a small red tripod beside a potted plant on a white shelf",
+    author: "Jonas Weber",
+    authorImage: "https://readymadeui.com/team-5.webp",
+    initials: "",
+    readTime: "5 min read",
+  },
+  {
+    title: "How we run a naming sprint in two days",
+    href: "#",
+    category: "Workshops",
+    date: "2026-09-18",
+    dateLabel: "Sep 18, 2026",
+    excerpt:
+      "Three hundred candidates on day one, three on day two, and the trademark check we now do before lunch.",
+    image: "https://readymadeui.com/team-image.webp",
+    imageAlt:
+      "Four colleagues laughing around a table with a laptop, papers and small plants",
+    author: "Ravi Menon",
+    authorImage: null,
+    initials: "RM",
+    readTime: "9 min read",
+  },
+  {
+    title: "What is on our desks after five years in one studio",
+    href: "#",
+    category: "Studio",
+    date: "2026-09-04",
+    dateLabel: "Sep 4, 2026",
+    excerpt:
+      "The monitors, chairs and lamps that lasted, and the gadgets we gave away within a month.",
+    image: "https://readymadeui.com/images/digital-img-3.webp",
+    imageAlt:
+      "White desk with a large monitor, a keyboard, an office chair and plants by a window",
+    author: "Amara Okafor",
+    authorImage: null,
+    initials: "AO",
+    readTime: "6 min read",
+  },
+];
+const {
+  render = true,
+  posts = defaultPosts,
+  allArticlesHref = "#",
+  theme = "inherit",
+  paddingTop = "large",
+  paddingBottom = "large",
+  id = `post-list-thumbnails-${crypto.randomUUID()}`,
+  class: className,
+  ...rest
+} = Astro.props;
+const titleId = `${id}-title`;
+const visiblePosts = posts.filter(
+  (post) => post.title.trim() && post.href.trim() && post.image.trim(),
+);
+---
+
+<Section
+  render={render && visiblePosts.length > 0}
+  {theme}
+  {paddingTop}
+  {paddingBottom}
+  {id}
+  aria-labelledby={titleId}
+  class={className}
+  {...rest}
+>
+  <div class="post-thumbnails_wrap">
+    <header class="post-thumbnails_intro">
+      <ContentWrapper>
+        <Eyebrow>Studio Marlow journal</Eyebrow>
+        <Heading tag="h2" variant="h2" id={titleId}>
+          Notes from the studio
+        </Heading>
+        <Paragraph variant="large" maxWidth={42}>
+          How a twelve-person brand and product studio in Lisbon works: process,
+          tools, and what we learn from clients.
+        </Paragraph>
+        <a class="post-thumbnails_all text-style-small" href={allArticlesHref}>
+          All articles
+          <IconArrowRight size="1em" stroke={1.75} aria-hidden="true" />
+        </a>
+      </ContentWrapper>
+    </header>
+    <ul class="post-thumbnails_list" role="list">
+      {visiblePosts.map((post) => (
+        <li class="post-thumbnails_item">
+          <article class="post-thumbnails_article">
+            <div class="post-thumbnails_media">
+              <img
+                class="post-thumbnails_image"
+                src={post.image}
+                alt={post.imageAlt}
+                width="672"
+                height="448"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div class="post-thumbnails_content">
+              <p class="post-thumbnails_meta text-style-small">
+                <span class="post-thumbnails_category">{post.category}</span> ·{" "}
+                <time datetime={post.date}>{post.dateLabel}</time>
+              </p>
+              <h3 class="post-thumbnails_title text-style-h6">
+                <a class="post-thumbnails_link" href={post.href}>
+                  {post.title}
+                </a>
+              </h3>
+              <p class="post-thumbnails_excerpt text-style-small">
+                {post.excerpt}
+              </p>
+              <div class="post-thumbnails_author text-style-small">
+                {post.authorImage ? (
+                  <img
+                    class="post-thumbnails_avatar"
+                    src={post.authorImage}
+                    alt=""
+                    width="48"
+                    height="48"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <span
+                    class="post-thumbnails_avatar initials"
+                    aria-hidden="true"
+                  >
+                    {post.initials ||
+                      post.author
+                        .split(/\s+/)
+                        .map((name) => name[0])
+                        .join("")
+                        .slice(0, 2)}
+                  </span>
+                )}
+                <span class="post-thumbnails_name">{post.author}</span>
+                <span aria-hidden="true">·</span>
+                <span class="post-thumbnails_read-time">{post.readTime}</span>
+              </div>
+            </div>
+          </article>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Section>
+
+<style is:global>
+  @layer components {
+    .post-thumbnails_wrap {
+      display: grid;
+      width: 100%;
+      gap: var(--space-8);
+      align-items: start;
+
+      @media (width >= 30rem) {
+        & .post-thumbnails_media {
+          width: 12rem;
+        }
+        & .post-thumbnails_article {
+          gap: var(--space-4);
+        }
+        & .post-thumbnails_excerpt {
+          display: -webkit-box;
+        }
+        & .post-thumbnails_item {
+          padding-block: var(--space-5);
+        }
+      }
+      @media (width >= 64rem) {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+        & .post-thumbnails_intro {
+          position: sticky;
+          top: calc(var(--nav-height) + var(--space-5));
+        }
+        & .post-thumbnails_media {
+          width: 14rem;
+        }
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        & .post-thumbnails_image {
+          transition: transform var(--hover-duration) var(--hover-ease);
+        }
+        & .post-thumbnails_article:hover .post-thumbnails_image {
+          transform: scale(1.05);
+        }
+        & .post-thumbnails_all svg {
+          transition: transform var(--hover-duration) var(--hover-ease);
+        }
+        & .post-thumbnails_all:hover svg {
+          transform: translateX(0.125em);
+        }
+      }
+    }
+    .post-thumbnails_intro {
+      min-width: 0;
+    }
+    .post-thumbnails_all {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      color: var(--link-text);
+      font-weight: var(--primary-medium);
+      text-decoration: none;
+      margin-top: var(--space-3);
+      border-radius: var(--radius-small);
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    .post-thumbnails_list {
+      min-width: 0;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .post-thumbnails_item {
+      padding-block: var(--space-4);
+      & + & {
+        border-top: var(--border-width) solid var(--border);
+      }
+      &:first-child {
+        padding-top: 0;
+      }
+      &:last-child {
+        padding-bottom: 0;
+      }
+    }
+    .post-thumbnails_article {
+      position: relative;
+      display: flex;
+      align-items: start;
+      gap: var(--space-3);
+      border-radius: var(--radius-main);
+      &:has(.post-thumbnails_link:focus-visible) {
+        outline: var(--focus-width) solid var(--link-text);
+        outline-offset: var(--space-1);
+      }
+      &:hover .post-thumbnails_title {
+        text-decoration: underline;
+      }
+    }
+    .post-thumbnails_media {
+      flex-shrink: 0;
+      width: 7rem;
+      aspect-ratio: 3 / 2;
+      overflow: hidden;
+      border-radius: var(--radius-main);
+      background: var(--background-2);
+      border: var(--border-width) solid var(--border);
+    }
+    .post-thumbnails_image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .post-thumbnails_content {
+      flex: 1;
+      min-width: 0;
+    }
+    .post-thumbnails_meta {
+      margin: 0;
+      color: var(--text-2);
+    }
+    .post-thumbnails_category {
+      color: var(--text);
+      font-weight: var(--primary-medium);
+    }
+    .post-thumbnails_title {
+      margin: var(--space-1) 0 0;
+      text-decoration-color: var(--border);
+      text-underline-offset: 0.2em;
+    }
+    .post-thumbnails_link {
+      color: var(--text);
+      text-decoration: none;
+      &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+      }
+      &:focus-visible {
+        outline: none;
+      }
+    }
+    .post-thumbnails_excerpt {
+      display: none;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin: var(--space-2) 0 0;
+      color: var(--text-2);
+    }
+    .post-thumbnails_author {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      margin-top: var(--space-2);
+      color: var(--text-2);
+    }
+    .post-thumbnails_avatar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      object-fit: cover;
+      border-radius: var(--radius-round);
+      background: var(--background-2);
+      color: var(--text);
+      &.initials {
+        font-size: 0.6875rem;
+        font-weight: var(--primary-medium);
+      }
+    }
+    .post-thumbnails_name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .post-thumbnails_read-time {
+      white-space: nowrap;
+    }
+  }
+</style>

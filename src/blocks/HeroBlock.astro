@@ -1,55 +1,279 @@
 ---
-import Layout from "@/layouts/BaseLayout.astro";
+import type { ComponentProps } from "astro/types";
 import Section from "@/components/wrapper/Section.astro";
-import Heading from "@/components/typography/Heading.astro";
-import Img from "@/components/media/Img.astro";
-import phone from "@/assets/graphics/phone.svg";
-import Grid from "@/components/wrapper/Grid.astro";
-import Card from "@/components/item/Card.astro";
-import { 
-  IconLockCheck,
-  IconTool,
-  IconHttpGet,
-} from "@tabler/icons-astro";
 import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Eyebrow from "@/components/typography/Eyebrow.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import Img from "@/components/media/Img.astro";
+import Grid from "@/components/wrapper/Grid.astro";
+import phone from "@/assets/graphics/phone.svg";
+import {
+  IconArrowUpRight,
+  IconBolt,
+  IconShieldCheck,
+  IconSparkles,
+  IconCheck,
+} from "@tabler/icons-astro";
+
+type Props = Pick<
+  ComponentProps<typeof Section>,
+  "render" | "theme" | "paddingTop" | "paddingBottom"
+> &
+  Omit<astroHTML.JSX.HTMLAttributes, "color"> & {
+    /** Primary action destination. */
+    primaryHref?: string;
+    /** Secondary action destination. */
+    secondaryHref?: string;
+  };
+const {
+  render = true,
+  primaryHref = "#installation",
+  secondaryHref = "#platform-features",
+  theme = "inherit",
+  paddingTop = "medium",
+  paddingBottom = "small",
+  class: className,
+  ...rest
+} = Astro.props;
+const benefits = [
+  {
+    icon: IconBolt,
+    title: "Move faster",
+    text: "Less setup between an idea and the first thing you ship.",
+  },
+  {
+    icon: IconShieldCheck,
+    title: "Build with confidence",
+    text: "A consistent foundation that keeps the details together.",
+  },
+  {
+    icon: IconSparkles,
+    title: "Make it yours",
+    text: "Simple building blocks. Room for your own point of view.",
+  },
+];
 ---
 
+<Section
+  id="HeroBlock"
+  {render}
+  {theme}
+  {paddingTop}
+  {paddingBottom}
+  class={className}
+  {...rest}
+>
+  <ContentWrapper variant="columns">
+    <Eyebrow>More creating. Less configuring.</Eyebrow>
+    <Heading variant="display" tag="h1" maxWidth={16}>
+      Let us handle the details.
+    </Heading>
+    <Paragraph variant="large" maxWidth={44}>
+      Bring your next idea to life with a foundation that’s already thought
+      through. Spend your time on the work that makes it yours.
+    </Paragraph>
+    <ButtonWrapper variant="stack-to-row">
+      <Button element="link" href={primaryHref}>
+        Start building{" "}
+        <IconArrowUpRight size="1em" stroke={1.75} aria-hidden="true" />
+      </Button>
+      <Button element="link" href={secondaryHref} emphasis="secondary">
+        Explore the platform
+      </Button>
+    </ButtonWrapper>
+    <p class="hero-block_note text-style-small">
+      Your ideas, with a little less busywork.
+    </p>
+    <div class="hero-preview_wrap" slot="column2">
+      <div class="hero-preview_header">
+        <span class="hero-preview_label">YOUR NEXT CHAPTER</span>
+        <span class="hero-preview_status">
+          <span></span>Ready to build
+        </span>
+      </div>
+      <div class="hero-preview_scene">
+        <span class="hero-preview_orbit" aria-hidden="true"></span>
+        <div class="hero-preview_device">
+          <Img
+            src={phone}
+            variant="constrained"
+            width={280}
+            sizes="(min-width: 64rem) 18rem, 60vw"
+            transparent
+            loading="eager"
+            fetchPriority="high"
+            alt="Illustration of a mobile app on a phone"
+          />
+        </div>
+        <div class="hero-preview_message">
+          <span class="hero-preview_mark">
+            <IconCheck size="1.1em" stroke={1.75} aria-hidden="true" />
+          </span>
+          <span>
+            <strong>The details? Handled.</strong>
+            <span>Make room for what’s next.</span>
+          </span>
+        </div>
+      </div>
+      <p class="hero-preview_footer">
+        A thoughtful start for whatever you’re making.
+      </p>
+    </div>
+  </ContentWrapper>
+  <Grid medium={3}>
+    {benefits.map(({ icon: Icon, title, text }) => (
+      <article class="hero-benefit_wrap">
+        <span class="hero-benefit_icon">
+          <Icon size="1.25em" stroke={1.75} aria-hidden="true" />
+        </span>
+        <div>
+          <h2 class="hero-benefit_title text-style-h6">{title}</h2>
+          <p class="hero-benefit_text text-style-small">{text}</p>
+        </div>
+      </article>
+    ))}
+  </Grid>
+</Section>
 
- <Section
-    id="HeroBlock"
-    paddingBottom="even"
-    containerClass="flex-grow"
-    paddingTop="even"
-    class="flex-shrink"
-    style="min-height: calc(100svh - var(--nav-height));"
-    fullHeight="true"
-    containerAttrs={{ id: "hero" }}
-    >
-    <ContentWrapper
-      class="flex-grow"
-      variant="columns"
-      gap="8"
-    >
-      <Heading variant="display" tag="h1" class="margin-block-2 font-anton">
-        Let us handle the details.
-      </Heading>
-      <Heading variant="h4" tag="h2" class="margin-block-4 font-figtree">
-        We take care of the details so you can focus on what matters.
-      </Heading>
-      <Img
-        variant="full-width"
-        slot="column2"
-        src={phone}
-        transparent
-        loading="eager"
-        fetchPriority="high"
-      />
-    </ContentWrapper>
-   
-      <Grid class="background-transparent alignment-center" xsmall={1} medium={2} large={3}>
-      <Card theme="light" iconSize="large" icon={IconLockCheck} heading="Fast" text="We handle the details quickly." />
-      <Card theme="light" icon={IconTool} heading="Reliable" text="You can count on us to get the job done right." />
-      <Card theme="light" icon={IconHttpGet} heading="Simple" text="We make the complex simple." />
-    </Grid>
-  </Section>
-
+<style is:global>
+  @layer components {
+    .hero-block_note {
+      margin: var(--space-3) 0 0;
+      color: var(--text-2);
+    }
+    .hero-preview_wrap {
+      position: relative;
+      width: 100%;
+      min-width: 0;
+      overflow: hidden;
+      border: var(--border-width) solid var(--border);
+      border-radius: calc(var(--radius-main) * 1.5);
+      background: var(--background-2);
+      color: var(--text);
+    }
+    .hero-preview_header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+      padding: var(--space-4);
+    }
+    .hero-preview_label {
+      font-family: ui-monospace, monospace;
+      font-size: 0.625rem;
+      letter-spacing: 0.1em;
+      color: var(--text-2);
+    }
+    .hero-preview_status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5em;
+      font-size: 0.6875rem;
+      & > span {
+        width: 0.5em;
+        height: 0.5em;
+        border-radius: var(--radius-round);
+        background: currentcolor;
+      }
+    }
+    .hero-preview_scene {
+      position: relative;
+      display: grid;
+      place-items: center;
+      isolation: isolate;
+      padding: var(--space-3) var(--space-5) var(--space-7);
+    }
+    .hero-preview_orbit {
+      position: absolute;
+      z-index: -1;
+      width: 85%;
+      aspect-ratio: 1;
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-round);
+      background: radial-gradient(circle, var(--background-3), transparent 70%);
+      &::after {
+        content: "";
+        position: absolute;
+        inset: 12%;
+        border: var(--border-width) solid var(--border);
+        border-radius: inherit;
+      }
+    }
+    .hero-preview_device {
+      width: min(52%, 15rem);
+      transform: rotate(-7deg);
+      filter: drop-shadow(
+        0 var(--space-3) var(--space-4)
+          color-mix(in srgb, var(--text) 12%, transparent)
+      );
+    }
+    .hero-preview_message {
+      position: absolute;
+      bottom: var(--space-4);
+      inset-inline: var(--space-4);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      width: fit-content;
+      max-width: calc(100% - var(--space-4) * 2);
+      margin-inline: auto;
+      padding: var(--space-3);
+      background: var(--background);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-main);
+      box-shadow: 0 var(--space-2) var(--space-5)
+        color-mix(in srgb, var(--text) 8%, transparent);
+      & strong {
+        display: block;
+        font-size: 0.8125rem;
+      }
+      & strong + span {
+        display: block;
+        font-size: 0.6875rem;
+        color: var(--text-2);
+      }
+    }
+    .hero-preview_mark {
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      width: 2em;
+      height: 2em;
+      border-radius: var(--radius-round);
+      color: var(--button-text);
+      background: var(--button-background);
+    }
+    .hero-preview_footer {
+      margin: 0;
+      padding: var(--space-3) var(--space-4);
+      border-top: var(--border-width) solid var(--border);
+      text-align: center;
+      font-size: 0.6875rem;
+      color: var(--text-2);
+    }
+    .hero-benefit_wrap {
+      display: flex;
+      align-items: start;
+      gap: var(--space-3);
+      border-top: var(--border-width) solid var(--border);
+      padding-block: var(--space-4);
+    }
+    .hero-benefit_icon {
+      flex-shrink: 0;
+      color: var(--text);
+      padding-top: 0.2em;
+    }
+    .hero-benefit_title {
+      margin: 0;
+    }
+    .hero-benefit_text {
+      margin: var(--space-2) 0 0;
+      color: var(--text-2);
+      max-width: 34ch;
+    }
+  }
+</style>

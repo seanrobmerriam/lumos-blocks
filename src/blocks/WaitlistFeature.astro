@@ -1,0 +1,349 @@
+---
+import type { ComponentProps } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Eyebrow from "@/components/typography/Eyebrow.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import { IconCircleCheck } from "@tabler/icons-astro";
+
+type Props = Omit<
+  ComponentProps<typeof Section>,
+  "gap" | "align" | "fullHeight" | "containerClass" | "containerAttrs"
+> & {
+  /** Trial signup destination. */
+  trialHref?: string;
+};
+const {
+  render = true,
+  trialHref = "#installation",
+  theme = "inherit",
+  paddingTop = "medium",
+  paddingBottom = "medium",
+  id = "smart-waitlist",
+  class: className,
+  ...rest
+} = Astro.props;
+const scheduleId = `${id}-example`;
+const benefits = [
+  {
+    title: "Reach the right patients.",
+    text: "Offer each opening to people waiting for that appointment.",
+  },
+  {
+    title: "Let a reply do the booking.",
+    text: "Patients accept by text, without another call to reception.",
+  },
+  {
+    title: "Keep your team in the loop.",
+    text: "See every offer and confirmation in the day’s schedule.",
+  },
+];
+
+const appointments = [
+  {
+    time: "09:00",
+    name: "Omar Haddad",
+    treatment: "Routine check-up",
+    status: "Checked in",
+  },
+  {
+    time: "10:30",
+    name: "Lena Fischer",
+    treatment: "Hygiene appointment",
+    status: "Filled",
+  },
+  {
+    time: "11:15",
+    name: "Kenji Watanabe",
+    treatment: "New patient consultation",
+    status: "Unconfirmed",
+  },
+  {
+    time: "12:00",
+    name: "Priya Raman",
+    treatment: "Follow-up appointment",
+    status: "Confirmed",
+  },
+];
+---
+
+<Section
+  {render}
+  {theme}
+  {paddingTop}
+  {paddingBottom}
+  id={id}
+  class={className}
+  {...rest}
+>
+  <ContentWrapper variant="columns">
+    <Eyebrow>Smart waitlist</Eyebrow>
+    <Heading tag="h2" variant="h2" maxWidth={22}>
+      Fill a cancelled slot before the chair goes cold
+    </Heading>
+    <Paragraph variant="large" maxWidth={48}>
+      A last-minute cancellation doesn’t have to leave a gap in your day. Marlow
+      connects an open chair with a patient ready to take it.
+    </Paragraph>
+    <ul class="waitlist-benefits_wrap">
+      {benefits.map((benefit) => (
+        <li class="waitlist-benefits_item">
+          <IconCircleCheck size="1.25em" stroke={1.75} aria-hidden="true" />
+          <span>
+            <strong>{benefit.title}</strong> {benefit.text}
+          </span>
+        </li>
+      ))}
+    </ul>
+    <ButtonWrapper variant="stack-to-row">
+      <Button element="link" href={trialHref} class="text-style-small">
+        Start a 14-day trial <span aria-hidden="true">↗</span>
+      </Button>
+      <Button
+        element="link"
+        emphasis="secondary"
+        href={`#${scheduleId}`}
+        class="text-style-small"
+      >
+        See how the waitlist works
+      </Button>
+    </ButtonWrapper>
+    <div class="waitlist-schedule_wrap" id={scheduleId} slot="column2">
+      <div
+        class="waitlist-schedule_panel"
+        role="img"
+        aria-label="Example schedule for Dr. Amara Okafor in room 2 on Thursday, October 29. Nine appointments booked. The 10:30 slot was cancelled by text at 08:12, offered to three people at 08:13, and filled by Lena Fischer at 08:17. Other appointments include Omar Haddad at 09:00, Kenji Watanabe at 11:15, and Priya Raman at 12:00."
+      >
+        <div class="waitlist-schedule_header" aria-hidden="true">
+          <div>
+            <p class="waitlist-schedule_label">MARLOW / DAY SCHEDULE</p>
+            <p class="waitlist-schedule_date">Thursday, October 29</p>
+            <p class="waitlist-schedule_secondary">Dr. Amara Okafor, room 2</p>
+          </div>
+          <span class="waitlist-schedule_badge">9 booked</span>
+        </div>
+        <ol class="waitlist-schedule_list" aria-hidden="true">
+          {appointments.map((appointment) => (
+            <li
+              class:list={[
+                "waitlist-schedule_appointment",
+                appointment.status === "Filled" && "filled",
+              ]}
+            >
+              <div class="waitlist-schedule_row">
+                <span class="waitlist-schedule_time">{appointment.time}</span>
+                <div class="waitlist-schedule_patient">
+                  <strong>{appointment.name}</strong>
+                  <span>{appointment.treatment}</span>
+                </div>
+                <span
+                  class:list={[
+                    "waitlist-schedule_status",
+                    appointment.status === "Unconfirmed" && "pending",
+                  ]}
+                >
+                  {appointment.status}
+                </span>
+              </div>
+              {appointment.status === "Filled" && (
+                <ol class="waitlist-schedule_history">
+                  <li>
+                    <time>08:12</time> Cancelled by text
+                  </li>
+                  <li>
+                    <time>08:13</time> Offered to 3 people
+                  </li>
+                  <li>
+                    <time>08:17</time> Lena said yes
+                  </li>
+                </ol>
+              )}
+            </li>
+          ))}
+        </ol>
+        <p class="waitlist-schedule_note" aria-hidden="true">
+          One cancellation. Five minutes. A full chair again.
+        </p>
+      </div>
+      <p class="waitlist-schedule_caption text-style-small">
+        Illustrative schedule. Patient names and activity are sample data.
+      </p>
+    </div>
+  </ContentWrapper>
+</Section>
+
+<style is:global>
+  @layer components {
+    .waitlist-benefits_wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      list-style: none;
+      padding: 0;
+      margin: var(--space-5) 0 0;
+    }
+    .waitlist-benefits_item {
+      display: flex;
+      align-items: start;
+      gap: var(--space-2);
+      color: var(--text-2);
+      & > svg {
+        flex-shrink: 0;
+        margin-top: 0.2em;
+        color: var(--text);
+      }
+      & strong {
+        color: var(--text);
+        font-weight: 600;
+      }
+    }
+  }
+</style>
+
+<style is:global>
+  @layer components {
+    .waitlist-schedule_wrap {
+      width: 100%;
+      min-width: 0;
+      padding: var(--space-2);
+      background: var(--background-2);
+      border: var(--border-width) solid var(--border);
+      border-radius: calc(var(--radius-main) * 1.5);
+    }
+    .waitlist-schedule_panel {
+      min-width: 0;
+      overflow: hidden;
+      padding: var(--space-4);
+      background: var(--background);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-main);
+      color: var(--text);
+      box-shadow: 0 0.125rem 0.5rem
+        color-mix(in srgb, var(--text) 5%, transparent);
+    }
+    .waitlist-schedule_header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: start;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+    }
+    .waitlist-schedule_label {
+      margin: 0 0 var(--space-2);
+      font-family: ui-monospace, monospace;
+      font-size: 0.625rem;
+      letter-spacing: 0.08em;
+      color: var(--text-2);
+    }
+    .waitlist-schedule_date {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .waitlist-schedule_secondary {
+      margin: var(--space-1) 0 0;
+      font-size: 0.75rem;
+      color: var(--text-2);
+    }
+    .waitlist-schedule_badge,
+    .waitlist-schedule_status {
+      flex-shrink: 0;
+      padding: 0.25em 0.625em;
+      border-radius: var(--radius-round);
+      border: var(--border-width) solid var(--border);
+      font-size: 0.625rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .waitlist-schedule_badge {
+      background: var(--background-2);
+    }
+    .waitlist-schedule_list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .waitlist-schedule_appointment {
+      min-width: 0;
+      background: var(--background-2);
+      padding: var(--space-2);
+      border: calc(var(--border-width) * 2) solid transparent;
+      border-radius: var(--radius-small);
+    }
+    .waitlist-schedule_appointment.filled {
+      background: var(--background);
+      border-color: var(--text);
+    }
+    .waitlist-schedule_row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      min-width: 0;
+    }
+    .waitlist-schedule_time {
+      flex-shrink: 0;
+      font-family: ui-monospace, monospace;
+      font-size: 0.6875rem;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-2);
+    }
+    .waitlist-schedule_patient {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 0;
+      font-size: 0.75rem;
+      & > * {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      & > span {
+        font-size: 0.625rem;
+        color: var(--text-2);
+      }
+    }
+    .waitlist-schedule_status {
+      color: light-dark(#16633e, #98e2b5);
+      background: light-dark(#e7f5ec, #173429);
+      border-color: light-dark(#c3e2cd, #355d44);
+    }
+    .waitlist-schedule_status.pending {
+      color: var(--text-2);
+      background: var(--background);
+      border-color: var(--border);
+    }
+    .waitlist-schedule_history {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      list-style: none;
+      margin: var(--space-3) 0 0;
+      padding: var(--space-2) 0 0;
+      border-top: var(--border-width) solid var(--border);
+      font-size: 0.6875rem;
+      color: var(--text-2);
+      & time {
+        font-family: ui-monospace, monospace;
+        font-variant-numeric: tabular-nums;
+        margin-right: var(--space-2);
+      }
+    }
+    .waitlist-schedule_note {
+      margin: var(--space-3) 0 0;
+      font-size: 0.6875rem;
+      color: var(--text-2);
+    }
+    .waitlist-schedule_caption {
+      margin: var(--space-2);
+      color: var(--text-2);
+    }
+  }
+</style>

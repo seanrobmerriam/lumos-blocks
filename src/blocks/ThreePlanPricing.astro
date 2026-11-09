@@ -1,0 +1,493 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import { IconCheck } from "@tabler/icons-astro";
+
+type Props = Pick<
+  ComponentProps<typeof Section>,
+  "render" | "theme" | "paddingTop" | "paddingBottom"
+> &
+  HTMLAttributes<"section"> & {
+    /** Starter trial destination. */
+    starterHref?: string;
+    /** Team trial destination. */
+    teamHref?: string;
+    /** Business trial destination. */
+    businessHref?: string;
+  };
+const {
+  render = true,
+  starterHref = "#installation",
+  teamHref = "#installation",
+  businessHref = "#installation",
+  theme = "inherit",
+  paddingTop = "large",
+  paddingBottom = "large",
+  id = `three-plan-pricing-${crypto.randomUUID()}`,
+  class: className,
+  ...rest
+} = Astro.props;
+const titleId = `${id}-title`;
+const statusId = `${id}-status`;
+const plans = [
+  {
+    slug: "starter",
+    name: "Starter",
+    description: "For side projects and small business sites.",
+    monthly: "$24",
+    yearly: "$20",
+    annual: "$240",
+    href: starterHref,
+    featured: false,
+    includes: "What’s included",
+    features: [
+      "20 monitors",
+      "Checks every minute",
+      "1 public status page",
+      "Email and Slack alerts",
+      "3 months of history",
+    ],
+  },
+  {
+    slug: "team",
+    name: "Team",
+    description: "For product teams who share an on-call rota.",
+    monthly: "$60",
+    yearly: "$50",
+    annual: "$600",
+    href: teamHref,
+    featured: true,
+    includes: "Everything in Starter, plus:",
+    features: [
+      "100 monitors",
+      "Checks every 30 seconds",
+      "5 status pages on your own domain",
+      "SMS and phone-call alerts, 100 a month",
+      "On-call schedules and escalation",
+      "1 year of history",
+    ],
+  },
+  {
+    slug: "business",
+    name: "Business",
+    description: "For companies with uptime promises in their contracts.",
+    monthly: "$180",
+    yearly: "$150",
+    annual: "$1,800",
+    href: businessHref,
+    featured: false,
+    includes: "Everything in Team, plus:",
+    features: [
+      "500 monitors",
+      "Checks every 10 seconds from 18 regions",
+      "Unlimited status pages and subscribers",
+      "SSO, SCIM and an audit log",
+      "Priority support, answered within 1 hour",
+    ],
+  },
+];
+---
+
+<Section
+  {render}
+  {theme}
+  {paddingTop}
+  {paddingBottom}
+  {id}
+  class={className}
+  aria-labelledby={titleId}
+  data-three-plan-pricing
+  {...rest}
+>
+  <ContentWrapper centered>
+    <p class="pricing-eyebrow_wrap">Pricing</p>
+    <Heading tag="h2" variant="h2" id={titleId} maxWidth={28}>
+      Know about downtime before your customers do
+    </Heading>
+    <Paragraph variant="large" maxWidth={57}>
+      Every plan checks your sites from 6 regions and comes with a public status
+      page. Move up when you need more monitors or faster checks.
+    </Paragraph>
+    <fieldset
+      class="pricing-billing_wrap"
+      aria-describedby={statusId}
+      hidden
+      data-billing-control
+    >
+      <legend class="sr-only">Billing period</legend>
+      <div class="pricing-billing_segments">
+        <label class="pricing-billing_option">
+          <input
+            class="sr-only"
+            type="radio"
+            name={`${id}-billing`}
+            value="monthly"
+          />
+          Monthly
+        </label>
+        <label class="pricing-billing_option">
+          <input
+            class="sr-only"
+            type="radio"
+            name={`${id}-billing`}
+            value="yearly"
+            checked
+          />
+          Yearly <span class="pricing-billing_saving">2 months free</span>
+        </label>
+      </div>
+    </fieldset>
+    <p
+      class="pricing-status_wrap text-style-small"
+      id={statusId}
+      role="status"
+      data-monthly="Monthly prices, billed every month. Cancel any time."
+      data-yearly="Yearly prices: 12 months for the price of 10."
+    >
+      Yearly prices: 12 months for the price of 10.
+    </p>
+  </ContentWrapper>
+
+  <div class="pricing-three_wrap">
+    {plans.map((plan) => (
+      <article
+        class:list={[
+          "pricing-three_card",
+          plan.featured && "featured theme-dark",
+        ]}
+        aria-labelledby={`${id}-${plan.slug}`}
+      >
+        <div class="pricing-three_intro">
+          <div class="pricing-three_name">
+            <h3
+              class="pricing-three_title text-style-h5"
+              id={`${id}-${plan.slug}`}
+            >
+              {plan.name}
+            </h3>
+            {plan.featured && (
+              <span class="pricing-three_badge">Most popular</span>
+            )}
+          </div>
+          <p class="pricing-three_description text-style-small">
+            {plan.description}
+          </p>
+        </div>
+        <div class="pricing-three_cost">
+          <p class="pricing-three_price">
+            <strong data-monthly={plan.monthly} data-yearly={plan.yearly}>
+              {plan.yearly}
+            </strong>
+            <span>per month</span>
+          </p>
+          <p
+            class="pricing-three_billing"
+            data-monthly="Billed every month"
+            data-yearly={`Billed ${plan.annual} once a year`}
+          >
+            Billed {plan.annual} once a year
+          </p>
+        </div>
+        <div class="pricing-three_action">
+          <Button
+            element="link"
+            href={plan.href}
+            emphasis={plan.featured ? "primary" : "secondary"}
+            class="width-full text-style-small"
+            aria-label={`Start 14-day trial of ${plan.name}`}
+          >
+            Start 14-day trial
+          </Button>
+        </div>
+        <div class="pricing-three_features">
+          <p class="pricing-three_includes text-style-small">{plan.includes}</p>
+          <ul>
+            {plan.features.map((feature) => (
+              <li>
+                <IconCheck size="1.15em" stroke={1.75} aria-hidden="true" />
+                <span>{feature}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </article>
+    ))}
+  </div>
+  <Paragraph
+    variant="small"
+    maxWidth={80}
+    class="alignment-center align-self-center"
+  >
+    Prices in US dollars. Sales tax or VAT is added at checkout where it
+    applies. Every plan starts with a 14-day trial, no card needed. Cancel any
+    time in Settings: your plan runs until the end of the period you paid for.
+  </Paragraph>
+</Section>
+
+<script>
+  function initializePricing() {
+    for (const section of document.querySelectorAll<HTMLElement>(
+      "[data-three-plan-pricing]",
+    )) {
+      if (section.dataset.pricingReady) continue;
+      section.dataset.pricingReady = "true";
+      const control = section.querySelector<HTMLFieldSetElement>(
+        "[data-billing-control]",
+      );
+      if (!control) continue;
+      const update = () => {
+        const checked = control.querySelector<HTMLInputElement>(
+          'input[type="radio"]:checked',
+        );
+        const period = checked?.value === "monthly" ? "monthly" : "yearly";
+        for (const item of section.querySelectorAll<HTMLElement>(
+          "[data-monthly][data-yearly]",
+        )) {
+          const value = item.dataset[period];
+          if (value !== undefined && item.textContent !== value)
+            item.textContent = value;
+        }
+      };
+      control.addEventListener("change", update);
+      update();
+      control.hidden = false;
+    }
+  }
+  initializePricing();
+  document.addEventListener("astro:page-load", initializePricing);
+</script>
+
+<style is:global>
+  @layer components {
+    .pricing-eyebrow_wrap {
+      margin: 0;
+      color: var(--text-2);
+      font-family: ui-monospace, monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+    .pricing-billing_wrap {
+      margin: var(--space-5) 0 0;
+      padding: 0;
+      border: 0;
+      min-width: 0;
+      max-width: 100%;
+    }
+    .pricing-billing_segments {
+      display: inline-flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.125rem;
+      padding: 0.25rem;
+      background: var(--background-2);
+      border-radius: var(--radius-main);
+    }
+    .pricing-billing_option {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-1);
+      min-height: 2rem;
+      padding: 0.375rem 0.75rem;
+      border: var(--border-width) solid transparent;
+      border-radius: var(--radius-small);
+      font-size: 0.875rem;
+      font-weight: var(--primary-medium);
+      color: var(--text-2);
+      cursor: pointer;
+      transition:
+        background-color var(--hover-duration) var(--hover-ease),
+        color var(--hover-duration) var(--hover-ease);
+      &:hover {
+        color: var(--text);
+      }
+      &:has(:checked) {
+        background: var(--background);
+        border-color: var(--border);
+        color: var(--text);
+      }
+      &:has(:focus-visible) {
+        outline: var(--focus-width) solid var(--text);
+        outline-offset: var(--focus-offset);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+      }
+    }
+    .pricing-billing_saving {
+      padding: 0.125em 0.5em;
+      border-radius: var(--radius-round);
+      font-size: 0.6875rem;
+      color: light-dark(#16633e, #98e2b5);
+      background: light-dark(#e7f5ec, #173429);
+      white-space: nowrap;
+    }
+    .pricing-status_wrap {
+      margin: var(--space-2) 0 0;
+      color: var(--text-2);
+    }
+    .pricing-three_wrap {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-3);
+      width: 100%;
+      @media (width >= 30rem) {
+        & > .pricing-three_card {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          grid-template-rows: auto auto 1fr;
+          column-gap: var(--space-5);
+          padding: var(--space-5);
+        }
+        & .pricing-three_intro {
+          grid-column: 1;
+          grid-row: 1;
+        }
+        & .pricing-three_cost {
+          grid-column: 1;
+          grid-row: 2;
+        }
+        & .pricing-three_action {
+          grid-column: 1;
+          grid-row: 3;
+        }
+        & .pricing-three_features {
+          grid-column: 2;
+          grid-row: 1 / span 3;
+          border-top: 0;
+          border-left: var(--border-width) solid var(--border);
+          margin-top: 0;
+          padding-top: 0;
+          padding-left: var(--space-5);
+        }
+      }
+      @media (width >= 64rem) {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        row-gap: 0;
+        & > .pricing-three_card {
+          grid-row: span 4;
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-rows: subgrid;
+        }
+        & .pricing-three_intro {
+          grid-column: 1;
+          grid-row: 1;
+        }
+        & .pricing-three_cost {
+          grid-column: 1;
+          grid-row: 2;
+        }
+        & .pricing-three_action {
+          grid-column: 1;
+          grid-row: 3;
+        }
+        & .pricing-three_features {
+          grid-column: 1;
+          grid-row: 4;
+          border-left: 0;
+          border-top: var(--border-width) solid var(--border);
+          padding-left: 0;
+          padding-top: var(--space-4);
+          margin-top: var(--space-5);
+        }
+      }
+    }
+    .pricing-three_card {
+      display: grid;
+      min-width: 0;
+      padding: var(--space-4);
+      background: var(--background-2);
+      color: var(--text);
+      border: var(--border-width) solid var(--border);
+      border-radius: calc(var(--radius-main) * 2);
+      &.featured {
+        background: var(--background);
+        border-color: var(--text-2);
+      }
+    }
+    .pricing-three_name {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+    }
+    .pricing-three_title {
+      margin: 0;
+    }
+    .pricing-three_badge {
+      flex-shrink: 0;
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-round);
+      padding: 0.25em 0.75em;
+      background: var(--background-2);
+      font-size: 0.6875rem;
+      white-space: nowrap;
+    }
+    .pricing-three_description {
+      margin: var(--space-1) 0 0;
+      color: var(--text-2);
+    }
+    .pricing-three_cost {
+      margin-top: var(--space-5);
+    }
+    .pricing-three_price {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: var(--space-1);
+      margin: 0;
+      & > strong {
+        font-size: 3rem;
+        line-height: 1.1;
+        font-weight: var(--primary-bold);
+        letter-spacing: var(--letter-spacing-tight);
+        font-variant-numeric: tabular-nums;
+      }
+      & > span {
+        font-size: 0.875rem;
+        color: var(--text-2);
+      }
+    }
+    .pricing-three_billing {
+      margin: var(--space-1) 0 0;
+      font-size: 0.8125rem;
+      color: var(--text-2);
+    }
+    .pricing-three_action {
+      margin-top: var(--space-5);
+      align-self: start;
+    }
+    .pricing-three_features {
+      margin-top: var(--space-5);
+      padding-top: var(--space-4);
+      border-top: var(--border-width) solid var(--border);
+      & > ul {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        list-style: none;
+        padding: 0;
+        margin: var(--space-3) 0 0;
+        font-size: var(--text-small);
+      }
+      & li {
+        display: flex;
+        gap: var(--space-2);
+      }
+      & svg {
+        flex-shrink: 0;
+        margin-top: 0.2em;
+      }
+    }
+    .pricing-three_includes {
+      margin: 0;
+      font-weight: var(--primary-medium);
+    }
+  }
+</style>

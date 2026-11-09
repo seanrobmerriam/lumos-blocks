@@ -1,0 +1,565 @@
+---
+import type { ComponentProps, HTMLAttributes } from "astro/types";
+import Section from "@/components/wrapper/Section.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import {
+  IconArrowRight,
+  IconChevronRight,
+  IconCalendar,
+  IconInbox,
+  IconUser,
+  IconCircleDashed,
+  IconAt,
+  IconChartBar,
+  IconRipple,
+  IconArrowDown,
+  IconArrowUp,
+  IconStarFilled,
+} from "@tabler/icons-astro";
+
+type Props = Pick<
+  ComponentProps<typeof Section>,
+  "render" | "theme" | "paddingTop" | "paddingBottom"
+> &
+  HTMLAttributes<"section"> & {
+    /** Heading level. */
+    headingTag?: "h1" | "h2" | "h3";
+    /** Announcement destination. */
+    announcementHref?: string;
+    /** Primary action destination. */
+    trialHref?: string;
+    /** Secondary action destination. */
+    demoHref?: string;
+    /** Rating text. Omit to hide the example rating. */
+    ratingText?: string;
+  };
+const {
+  render = true,
+  headingTag = "h1",
+  announcementHref,
+  trialHref = "#installation",
+  demoHref,
+  ratingText,
+  theme = "inherit",
+  paddingTop = "large",
+  paddingBottom = "none",
+  id = "centered-product-hero",
+  class: className,
+  ...rest
+} = Astro.props;
+const titleId = `${id}-title`;
+const previewId = `${id}-preview`;
+const navigation = [
+  { icon: IconInbox, label: "Inbox", count: "24" },
+  { icon: IconUser, label: "Assigned to me", count: "8" },
+  { icon: IconCircleDashed, label: "Unassigned", count: "5" },
+  { icon: IconAt, label: "Mentions", count: "" },
+  { icon: IconChartBar, label: "Reports", count: "" },
+];
+const metrics = [
+  {
+    label: "First reply, median",
+    value: "4m 12s",
+    change: "38s faster",
+    icon: IconArrowDown,
+  },
+  {
+    label: "Satisfaction",
+    value: "96.4%",
+    change: "1.2 pts up",
+    icon: IconArrowUp,
+  },
+  {
+    label: "Close to a deadline",
+    value: "3",
+    change: "Due within 15 min",
+    icon: undefined,
+  },
+];
+const conversations = [
+  {
+    initials: "AO",
+    name: "Amara Okafor",
+    subject: "Can I move my delivery to Friday?",
+    status: "Waiting",
+    tone: "waiting",
+    time: "2m",
+  },
+  {
+    initials: "LM",
+    name: "Lucas Moreau",
+    subject: "Refund for order #48213",
+    status: "Replied",
+    tone: "replied",
+    time: "9m",
+  },
+  {
+    initials: "KW",
+    name: "Kenji Watanabe",
+    subject: "The reset link in my email has expired",
+    status: "Late",
+    tone: "late",
+    time: "26m",
+  },
+  {
+    initials: "LF",
+    name: "Lena Fischer",
+    subject: "New billing address for our invoices",
+    status: "New",
+    tone: "new",
+    time: "41m",
+  },
+];
+---
+
+<Section
+  {render}
+  {theme}
+  {paddingTop}
+  {paddingBottom}
+  {id}
+  aria-labelledby={titleId}
+  class={className}
+  {...rest}
+>
+  <div class="product-backdrop_wrap" slot="background" aria-hidden="true"></div>
+  <ContentWrapper centered>
+    <a
+      class="product-announcement_wrap"
+      href={announcementHref ?? `#${previewId}`}
+    >
+      <span class="product-announcement_badge">New</span>
+      <span class="product-announcement_text">
+        Shared inboxes for every team
+      </span>
+      <IconChevronRight size="1em" stroke={1.75} aria-hidden="true" />
+    </a>
+    <Heading tag={headingTag} variant="display" id={titleId} maxWidth={23}>
+      Answer every customer from one calm inbox
+    </Heading>
+    <Paragraph variant="large" maxWidth={57}>
+      Halcyon brings email, chat and WhatsApp into one queue, sends each
+      conversation to the right person, and tells you before a reply runs late.
+    </Paragraph>
+    <ButtonWrapper variant="stack-to-row">
+      <Button element="link" href={trialHref}>
+        Start free trial{" "}
+        <span class="product-action_arrow">
+          <IconArrowRight size="1em" stroke={1.75} aria-hidden="true" />
+        </span>
+      </Button>
+      <Button
+        element="link"
+        href={demoHref ?? `#${previewId}`}
+        emphasis="secondary"
+      >
+        <IconCalendar size="1em" stroke={1.75} aria-hidden="true" /> Book a demo
+      </Button>
+    </ButtonWrapper>
+    {ratingText && (
+      <p class="product-rating_wrap text-style-small">
+        <span class="product-rating_stars" aria-hidden="true">
+          {Array.from({ length: 5 }, () => (
+            <IconStarFilled size="1em" />
+          ))}
+        </span>
+        <span>{ratingText}</span>
+      </p>
+    )}
+  </ContentWrapper>
+
+  <div class="product-inbox_wrap" id={previewId}>
+    <div
+      class="product-inbox_stage"
+      role="img"
+      aria-label="Example Halcyon inbox for Priya: 24 open conversations, median first reply 4 minutes 12 seconds, 96.4 percent satisfaction, and three conversations nearing a deadline. Four customer messages have Waiting, Replied, Late, and New statuses."
+    >
+      <div class="product-inbox_sidebar" aria-hidden="true">
+        <div class="product-inbox_brand">
+          <span>
+            <IconRipple size="1em" stroke={1.75} />
+          </span>
+          <strong>Halcyon</strong>
+        </div>
+        <div class="product-inbox_navigation">
+          {navigation.map(({ icon: Icon, label, count }, i) => (
+            <div class:list={["product-inbox_nav-item", i === 0 && "current"]}>
+              <Icon size="1.1em" stroke={1.75} />
+              <span>{label}</span>
+              <span class="product-inbox_count">{count}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="product-inbox_panel" aria-hidden="true">
+        <div class="product-inbox_header">
+          <strong class="product-inbox_truncate">Good morning, Priya</strong>
+          <span class="product-inbox_status">24 open</span>
+        </div>
+        <div class="product-inbox_metrics">
+          {metrics.map(({ label, value, change, icon: Icon }) => (
+            <div class="product-inbox_metric">
+              <p class="product-inbox_truncate">{label}</p>
+              <strong>{value}</strong>
+              <p class:list={["product-inbox_change", !Icon && "deadline"]}>
+                {Icon && <Icon size="1em" stroke={1.75} />}
+                {change}
+              </p>
+            </div>
+          ))}
+        </div>
+        <div class="product-inbox_conversations">
+          {conversations.map((conversation) => (
+            <div class="product-inbox_conversation">
+              <span class="product-inbox_avatar">{conversation.initials}</span>
+              <div class="product-inbox_message">
+                <strong>{conversation.name}</strong>
+                <span>{conversation.subject}</span>
+              </div>
+              <span class:list={["product-inbox_status", conversation.tone]}>
+                <span></span>
+                {conversation.status}
+              </span>
+              <span class="product-inbox_time">{conversation.time}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+    <p class="product-inbox_caption">
+      Illustrative product preview. Names and metrics are sample data.
+    </p>
+  </div>
+</Section>
+
+<style is:global>
+  @layer components {
+    .product-backdrop_wrap {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      color: var(--text);
+      background-image:
+        linear-gradient(
+          to right,
+          currentcolor var(--border-width),
+          transparent var(--border-width)
+        ),
+        linear-gradient(
+          to bottom,
+          currentcolor var(--border-width),
+          transparent var(--border-width)
+        );
+      background-size: 2.5rem 2.5rem;
+      opacity: 0.05;
+      mask-image: radial-gradient(70% 80% at top, black 20%, transparent 100%);
+    }
+    .product-announcement_wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      max-width: 100%;
+      padding: 0.25rem 0.625rem 0.25rem 0.25rem;
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-small);
+      background: var(--background);
+      color: var(--text);
+      font-size: 0.75rem;
+      text-decoration: none;
+      transition: border-color var(--hover-duration) var(--hover-ease);
+      & > svg {
+        flex-shrink: 0;
+        transition: translate var(--hover-duration) var(--hover-ease);
+      }
+      &:hover {
+        border-color: var(--text);
+        & > svg {
+          translate: 0.125em 0;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+        & > svg {
+          transition: none;
+        }
+      }
+    }
+    .product-announcement_badge {
+      flex-shrink: 0;
+      padding: 0.125em 0.625em;
+      border-radius: var(--radius-round);
+      color: var(--button-text);
+      background: var(--button-background);
+      font-weight: 600;
+    }
+    .product-announcement_text {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .product-action_arrow {
+      display: inline-flex;
+      vertical-align: middle;
+      transition: translate var(--hover-duration) var(--hover-ease);
+      a:hover & {
+        translate: 0.125em 0;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+      }
+    }
+    .product-rating_wrap {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-2);
+      margin: var(--space-4) 0 0;
+      color: var(--text-2);
+    }
+    .product-rating_stars {
+      display: flex;
+      gap: 0.125em;
+      color: var(--text);
+    }
+    .product-inbox_wrap {
+      position: relative;
+      width: 100%;
+      max-width: 64rem;
+      margin-inline: auto;
+      scroll-margin-top: var(--nav-height);
+      &::after {
+        content: "";
+        position: absolute;
+        inset-inline: 0;
+        bottom: 0;
+        height: 6rem;
+        background: linear-gradient(to top, var(--background), transparent);
+        pointer-events: none;
+      }
+      @media (width >= 30rem) {
+        & .product-inbox_stage {
+          height: 24rem;
+        }
+        & .product-inbox_sidebar {
+          display: block;
+        }
+        & .product-inbox_metrics {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        & .product-inbox_metric:last-child {
+          display: block;
+        }
+        & .product-inbox_time {
+          display: block;
+        }
+      }
+    }
+    .product-inbox_stage {
+      display: flex;
+      height: 20rem;
+      min-width: 0;
+      overflow: hidden;
+      padding: var(--space-2);
+      background: var(--background-2);
+      border: var(--border-width) solid var(--border);
+      border-radius: calc(var(--radius-main) * 2);
+      text-align: start;
+      font-size: 0.75rem;
+    }
+    .product-inbox_sidebar {
+      display: none;
+      flex-shrink: 0;
+      width: 11rem;
+      padding: var(--space-2);
+    }
+    .product-inbox_brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-1);
+      & > span {
+        display: grid;
+        place-items: center;
+        width: 1.5em;
+        height: 1.5em;
+        border-radius: var(--radius-small);
+        color: var(--button-text);
+        background: var(--button-background);
+      }
+    }
+    .product-inbox_navigation {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+      margin-top: var(--space-3);
+    }
+    .product-inbox_nav-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-1);
+      border: var(--border-width) solid transparent;
+      border-radius: var(--radius-small);
+      color: var(--text-2);
+      &.current {
+        color: var(--text);
+        background: var(--background);
+        border-color: var(--border);
+      }
+    }
+    .product-inbox_count {
+      margin-inline-start: auto;
+      font-size: 0.625rem;
+      font-variant-numeric: tabular-nums;
+    }
+    .product-inbox_panel {
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      padding: var(--space-3);
+      border: var(--border-width) solid var(--border);
+      border-radius: calc(var(--radius-main) * 1.5);
+      background: var(--background);
+      color: var(--text);
+    }
+    .product-inbox_header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 0.875rem;
+    }
+    .product-inbox_truncate {
+      min-width: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .product-inbox_metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-2);
+      margin-top: var(--space-3);
+    }
+    .product-inbox_metric {
+      min-width: 0;
+      padding: var(--space-2);
+      background: var(--background-2);
+      border-radius: var(--radius-main);
+      & > p {
+        margin: 0;
+        color: var(--text-2);
+        font-size: 0.6875rem;
+      }
+      & > strong {
+        display: block;
+        margin-block: 0.25rem;
+        font-size: 1.125rem;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: var(--letter-spacing-tight);
+      }
+      &:last-child {
+        display: none;
+      }
+    }
+    .product-inbox_change {
+      display: flex;
+      align-items: center;
+      gap: 0.25em;
+      & > svg {
+        flex-shrink: 0;
+        color: light-dark(#167044, #83e8af);
+      }
+      &.deadline {
+        color: light-dark(#854d0e, #f5ce76);
+      }
+    }
+    .product-inbox_conversations {
+      margin-top: var(--space-2);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-main);
+      overflow: hidden;
+    }
+    .product-inbox_conversation {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2);
+      & + & {
+        border-top: var(--border-width) solid var(--border);
+      }
+    }
+    .product-inbox_avatar {
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      width: 2.5em;
+      height: 2.5em;
+      border-radius: var(--radius-round);
+      background: var(--background-2);
+      font-size: 0.625rem;
+    }
+    .product-inbox_message {
+      min-width: 0;
+      flex: 1;
+      & > * {
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      & > span {
+        color: var(--text-2);
+      }
+    }
+    .product-inbox_status {
+      display: inline-flex;
+      flex-shrink: 0;
+      align-items: center;
+      gap: 0.375em;
+      padding: 0.125em 0.625em;
+      background: var(--background-2);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-round);
+      font-size: 0.625rem;
+      white-space: nowrap;
+      & > span {
+        width: 0.375em;
+        height: 0.375em;
+        border-radius: var(--radius-round);
+        background: currentcolor;
+      }
+      &.waiting {
+        color: light-dark(#854d0e, #f5ce76);
+      }
+      &.replied {
+        color: light-dark(#167044, #83e8af);
+      }
+      &.late {
+        color: light-dark(#b42332, #ff9ba5);
+      }
+    }
+    .product-inbox_time {
+      display: none;
+      width: 2rem;
+      flex-shrink: 0;
+      text-align: end;
+      color: var(--text-2);
+      font-variant-numeric: tabular-nums;
+    }
+    .product-inbox_caption {
+      position: relative;
+      z-index: 1;
+      padding: var(--space-2);
+      margin: 0;
+      text-align: center;
+      color: var(--text-2);
+      font-size: 0.6875rem;
+    }
+  }
+</style>
