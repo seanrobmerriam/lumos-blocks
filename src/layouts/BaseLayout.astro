@@ -1,0 +1,154 @@
+---
+import "@/styles/global.css";
+import BaseHead from "@/components/utility/BaseHead.astro";
+import SkipLink from "@/components/global/SkipLink.astro";
+import Nav from "@/components/global/Nav.astro";
+import Footer from "@/components/global/Footer.astro";
+import type { SeoProps } from "@/types.ts";
+import "@fontsource-variable/reddit-sans";
+import "@fontsource/bowlby-one-sc";
+import "@fontsource/lilita-one";
+import "@fontsource/alfa-slab-one";
+import "@fontsource/architects-daughter";
+import "@fontsource-variable/grandstander";
+import "@fontsource/acme";
+import "@fontsource/luckiest-guy";
+import "@fontsource-variable/dosis";
+import "@fontsource-variable/fredoka";
+import "@fontsource-variable/urbanist";
+import "@fontsource/anton";
+import "@fontsource-variable/oswald";
+import "@fontsource-variable/outfit";
+import "@fontsource/momo-trust-display";
+import "@fontsource-variable/stack-sans-notch";
+import "@fontsource/averia-libre";
+import "@fontsource/indie-flower";
+import "@fontsource/special-elite";
+import "@fontsource/zen-maru-gothic";
+import "@fontsource-variable/red-hat-display";
+import "@fontsource/bangers";
+import "@fontsource-variable/figtree";
+
+type Props = SeoProps & {
+  /** Theme for the whole page. `inherit` leaves the root defaults in place. */
+  theme?: "inherit" | "light" | "dark" | "brand";
+  /**
+   * Fix the nav over the page rather than letting it stick in flow, so the
+   * first section starts underneath it. Give that section
+   * `paddingTop="navoverlap"` to clear the bar.
+   */
+  overlap?: boolean;
+};
+
+const { theme = "inherit", overlap = false, ...seo } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class:list={[theme !== "inherit" && `theme-${theme}`]}>
+  <head>
+    <BaseHead {...seo} />
+    <slot name="head" />
+  </head>
+  <body>
+    <SkipLink />
+    <Nav overlap={overlap} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style>
+  .font-reddit-sans {
+  font-family: "Reddit Sans Variable";
+}
+
+.font-bowlby-one-sc {
+  font-family: "Bowlby One SC";
+}
+
+.font-lilita-one {
+  font-family: "Lilita One";
+}
+
+.font-alfa-slab-one {
+  font-family: "Alfa Slab One";
+}
+
+.font-architects-daughter {
+  font-family: "Architects Daughter";
+}
+
+.font-grandstander {
+  font-family: "Grandstander Variable";
+}
+
+.font-acme {
+  font-family: "Acme";
+}
+
+.font-luckiest-guy {
+  font-family: "Luckiest Guy";
+}
+
+.font-dosis {
+  font-family: "Dosis Variable";
+}
+
+.font-fredoka {
+  font-family: "Fredoka Variable";
+}
+
+.font-urbanist {
+  font-family: "Urbanist Variable";
+}
+
+.font-anton {
+  font-family: "Anton";
+}
+
+.font-oswald {
+  font-family: "Oswald Variable";
+}
+
+.font-outfit {
+  font-family: "Outfit Variable";
+}
+
+.font-momo-trust-display {
+  font-family: "Momo Trust Display";
+}
+
+.font-stack-sans-notch {
+  font-family: "Stack Sans Notch Variable";
+}
+
+.font-averia-libre {
+  font-family: "Averia Libre";
+}
+
+.font-indie-flower {
+  font-family: "Indie Flower";
+}
+
+.font-special-elite {
+  font-family: "Special Elite";
+}
+
+.font-zen-maru-gothic {
+  font-family: "Zen Maru Gothic";
+}
+
+.font-red-hat-display {
+  font-family: "Red Hat Display Variable";
+}
+
+.font-bangers {
+  font-family: "Bangers";
+}
+
+.font-figtree {
+  font-family: "Figtree Variable";
+}
+</style>

@@ -1,0 +1,69 @@
+<div class="browser-window">
+  <div class="browser-header">
+    <div class="browser-dots">
+      <span class="dot red"></span>
+      <span class="dot yellow"></span>
+      <span class="dot green"></span>
+    </div>
+  </div>
+  <div class="browser-body">
+    <!-- Put your image, text, or content here -->
+    <slot />
+  </div>
+</div>
+
+<style>
+.browser-window {
+  width: 100%;
+  max-width: 600px;
+  border: 3px solid #404040;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  background: #000000;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.browser-header {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  background-color: #919191;
+  border-bottom: 1px solid #000000;
+}
+
+.browser-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.dot.red { background-color: #ef4444; }
+.dot.yellow { background-color: #f59e0b; }
+.dot.green { background-color: #10b981; }
+
+.browser-address {
+  flex-grow: 1;
+  margin: 0 12px;
+  background: #747373;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: #4b5563;
+  text-align: center;
+}
+
+.browser-body {
+  padding: 20px;
+  background: #000000;
+  vertical-align: middle;
+  align-items: center;
+  display: flex;
+}
+</style>

@@ -1,0 +1,56 @@
+---
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import MockBrowser from "@/blocks/MockBrowser.astro";
+import Section from "@/components/wrapper/Section.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Tabs from "@/components/interactive/Tabs.astro";
+import TabLink from "@/components/interactive/TabLink.astro";
+import RichText from "@/components/typography/RichText.astro";
+---
+
+<Section>
+    <ContentWrapper variant="stack" centered={true}>
+        <Heading variant="h2" tag="h2" class="margin-block-4 font-figtree">
+            Code Examples
+        </Heading>
+    </ContentWrapper>
+    </Section>
+    <Section paddingBottom="large" paddingTop="none">
+        <ContentWrapper variant="stack" centered={true}>
+        <Tabs variant="buttons">
+            <Fragment slot="links">
+                <TabLink>bun</TabLink>
+                <TabLink>pnpm</TabLink>
+                <TabLink>npm</TabLink>
+            </Fragment>
+
+            <ContentWrapper centered={true}>
+                <MockBrowser>
+ <p
+ variant="body"
+ class="alignment-start"
+ ><span class="color-blue padding-right-2">root@localhost:</span> <span class="color-yellow">bun create constella@latest</span>
+ </p>
+                </MockBrowser>
+            </ContentWrapper>
+            <ContentWrapper>            <ContentWrapper centered={true}>
+                <MockBrowser>
+ <p
+ variant="body"
+ class="alignment-start"
+ ><span class="color-blue padding-right-2">root@localhost:</span> <span class="color-yellow">pnpm create constella@latest</span>
+ </p>
+                </MockBrowser>
+            </ContentWrapper></ContentWrapper>
+            <ContentWrapper>            <ContentWrapper centered={true}>
+                <MockBrowser>
+ <p
+ variant="body"
+ class="alignment-start"
+ ><span class="color-blue padding-right-2">root@localhost:</span> <span class="color-yellow">npm create constella@latest</span>
+ </p>
+                </MockBrowser>
+            </ContentWrapper></ContentWrapper>
+        </Tabs>
+        </ContentWrapper>
+    </Section>

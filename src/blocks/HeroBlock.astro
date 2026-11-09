@@ -1,0 +1,55 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Img from "@/components/media/Img.astro";
+import phone from "@/assets/graphics/phone.svg";
+import Grid from "@/components/wrapper/Grid.astro";
+import Card from "@/components/item/Card.astro";
+import { 
+  IconLockCheck,
+  IconTool,
+  IconHttpGet,
+} from "@tabler/icons-astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+---
+
+
+ <Section
+    id="HeroBlock"
+    paddingBottom="even"
+    containerClass="flex-grow"
+    paddingTop="even"
+    class="flex-shrink"
+    style="min-height: calc(100svh - var(--nav-height));"
+    fullHeight="true"
+    containerAttrs={{ id: "hero" }}
+    >
+    <ContentWrapper
+      class="flex-grow"
+      variant="columns"
+      gap="8"
+    >
+      <Heading variant="display" tag="h1" class="margin-block-2 font-anton">
+        Let us handle the details.
+      </Heading>
+      <Heading variant="h4" tag="h2" class="margin-block-4 font-figtree">
+        We take care of the details so you can focus on what matters.
+      </Heading>
+      <Img
+        variant="full-width"
+        slot="column2"
+        src={phone}
+        transparent
+        loading="eager"
+        fetchPriority="high"
+      />
+    </ContentWrapper>
+   
+      <Grid class="background-transparent alignment-center" xsmall={1} medium={2} large={3}>
+      <Card theme="light" iconSize="large" icon={IconLockCheck} heading="Fast" text="We handle the details quickly." />
+      <Card theme="light" icon={IconTool} heading="Reliable" text="You can count on us to get the job done right." />
+      <Card theme="light" icon={IconHttpGet} heading="Simple" text="We make the complex simple." />
+    </Grid>
+  </Section>
+
